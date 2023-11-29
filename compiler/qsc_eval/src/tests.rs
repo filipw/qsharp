@@ -549,7 +549,7 @@ fn binop_div_bigint_zero() {
     check_expr(
         "",
         "12L / 0L",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -564,7 +564,7 @@ fn binop_div_bigint_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -587,7 +587,7 @@ fn binop_div_int_zero() {
     check_expr(
         "",
         "12 / 0",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -602,7 +602,7 @@ fn binop_div_int_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -616,7 +616,7 @@ fn binop_div_double_zero() {
     check_expr(
         "",
         "1.2 / 0.0",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -631,7 +631,7 @@ fn binop_div_double_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -765,7 +765,7 @@ fn binop_exp_bigint_negative_exp() {
     check_expr(
         "",
         "2L^-3",
-        &expect![[r#"
+        &expect![[r"
             (
                 InvalidNegativeInt(
                     -3,
@@ -781,7 +781,7 @@ fn binop_exp_bigint_negative_exp() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -790,7 +790,7 @@ fn binop_exp_bigint_too_large() {
     check_expr(
         "",
         "2L^9_223_372_036_854_775_807",
-        &expect![[r#"
+        &expect![[r"
             (
                 IntTooLarge(
                     9223372036854775807,
@@ -806,7 +806,7 @@ fn binop_exp_bigint_too_large() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -840,7 +840,7 @@ fn binop_exp_int_negative_exp() {
     check_expr(
         "",
         "2^-3",
-        &expect![[r#"
+        &expect![[r"
             (
                 InvalidNegativeInt(
                     -3,
@@ -856,7 +856,7 @@ fn binop_exp_int_negative_exp() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -865,7 +865,7 @@ fn binop_exp_int_too_large() {
     check_expr(
         "",
         "100^50",
-        &expect![[r#"
+        &expect![[r"
             (
                 IntTooLarge(
                     50,
@@ -881,7 +881,7 @@ fn binop_exp_int_too_large() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1045,7 +1045,7 @@ fn binop_mod_bigint_zero() {
     check_expr(
         "",
         "12L % 0L",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -1060,7 +1060,7 @@ fn binop_mod_bigint_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1079,7 +1079,7 @@ fn binop_mod_int_zero() {
     check_expr(
         "",
         "12 % 0",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -1094,7 +1094,7 @@ fn binop_mod_int_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1108,7 +1108,7 @@ fn binop_mod_double_zero() {
     check_expr(
         "",
         "1.2 % 0.0",
-        &expect![[r#"
+        &expect![[r"
             (
                 DivZero(
                     PackageSpan {
@@ -1123,7 +1123,7 @@ fn binop_mod_double_zero() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1321,7 +1321,7 @@ fn binop_shl_int_overflow() {
     check_expr(
         "",
         "1 <<< 64",
-        &expect![[r#"
+        &expect![[r"
             (
                 IntTooLarge(
                     64,
@@ -1337,7 +1337,7 @@ fn binop_shl_int_overflow() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1372,7 +1372,7 @@ fn binop_shr_int_overflow() {
     check_expr(
         "",
         "1 >>> 64",
-        &expect![[r#"
+        &expect![[r"
             (
                 IntTooLarge(
                     64,
@@ -1388,7 +1388,7 @@ fn binop_shr_int_overflow() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1655,7 +1655,7 @@ fn array_slice_step_zero_expr() {
     check_expr(
         "",
         "[1, 2, 3, 4, 5][...0...]",
-        &expect![[r#"
+        &expect![[r"
             (
                 RangeStepZero(
                     PackageSpan {
@@ -1670,7 +1670,7 @@ fn array_slice_step_zero_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1679,7 +1679,7 @@ fn array_slice_out_of_range_expr() {
     check_expr(
         "",
         "[1, 2, 3, 4, 5][0..7]",
-        &expect![[r#"
+        &expect![[r"
             (
                 IndexOutOfRange(
                     5,
@@ -1695,7 +1695,7 @@ fn array_slice_out_of_range_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1704,7 +1704,7 @@ fn array_index_negative_expr() {
     check_expr(
         "",
         "[1, 2, 3][-2]",
-        &expect![[r#"
+        &expect![[r"
             (
                 InvalidIndex(
                     -2,
@@ -1720,7 +1720,7 @@ fn array_index_negative_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -1729,7 +1729,7 @@ fn array_index_out_of_range_expr() {
     check_expr(
         "",
         "[1, 2, 3][4]",
-        &expect![[r#"
+        &expect![[r"
             (
                 IndexOutOfRange(
                     4,
@@ -1745,7 +1745,7 @@ fn array_index_out_of_range_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -2001,7 +2001,7 @@ fn update_invalid_index_range_expr() {
     check_expr(
         "",
         "[1, 2, 3] w/ 7 <- 4",
-        &expect![[r#"
+        &expect![[r"
             (
                 IndexOutOfRange(
                     7,
@@ -2017,7 +2017,7 @@ fn update_invalid_index_range_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 
@@ -2026,7 +2026,7 @@ fn update_invalid_index_negative_expr() {
     check_expr(
         "",
         "[1, 2, 3] w/ -1 <- 4",
-        &expect![[r#"
+        &expect![[r"
             (
                 InvalidNegativeInt(
                     -1,
@@ -2042,7 +2042,7 @@ fn update_invalid_index_negative_expr() {
                 ),
                 [],
             )
-        "#]],
+        "]],
     );
 }
 

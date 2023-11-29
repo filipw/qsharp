@@ -39,10 +39,10 @@ fn test_entry_point_attr_to_expr() {
                 operation Main() : Int { 41 + 1 }
             }"},
         "",
-        &expect![[r#"
+        &expect![[r"
             Expr 12 [40-73] [Type Int]: Call:
                 Expr 11 [40-73] [Type Int]: Var: Item 1
-                Expr 10 [40-73] [Type Unit]: Unit"#]],
+                Expr 10 [40-73] [Type Unit]: Unit"]],
     );
 }
 
@@ -54,13 +54,13 @@ fn test_entry_point_attr_missing() {
                 operation Main() : Int { 41 + 1 }
             }"},
         "",
-        &expect![[r#"
+        &expect![[r"
             [
                 EntryPoint(
                     NotFound,
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 

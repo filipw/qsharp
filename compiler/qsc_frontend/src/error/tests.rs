@@ -29,9 +29,9 @@ fn no_files() {
     let error = TestError::NoSpans("value".into());
     let formatted_error = format_error(&WithSource::from_map(&sources, error));
 
-    expect![[r#"
+    expect![[r"
         Error: value
-    "#]]
+    "]]
     .assert_eq(&formatted_error);
 }
 
@@ -51,11 +51,11 @@ fn error_spans_two_files() {
 
     let formatted_error = format_error(&WithSource::from_map(&sources, error));
 
-    expect![[r#"
+    expect![[r"
         Error: value
           [first label] [test1.qs] [Foo]
           [second label] [test2.qs] [Bar]
-    "#]]
+    "]]
     .assert_eq(&formatted_error);
 }
 
@@ -75,11 +75,11 @@ fn error_spans_begin() {
 
     let formatted_error = format_error(&WithSource::from_map(&sources, error));
 
-    expect![[r#"
+    expect![[r"
         Error: value
           [first label] [test1.qs] [namespace Foo]
           [second label] [test2.qs] [namespace Bar]
-    "#]]
+    "]]
     .assert_eq(&formatted_error);
 }
 
@@ -108,11 +108,11 @@ fn error_spans_eof() {
 
     let formatted_error = format_error(&WithSource::from_map(&sources, error));
 
-    expect![[r#"
+    expect![[r"
         Error: value
           [first label] [test1.qs] []
           [second label] [test2.qs] []
-    "#]]
+    "]]
     .assert_eq(&formatted_error);
 }
 

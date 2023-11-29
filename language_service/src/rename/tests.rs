@@ -52,7 +52,7 @@ fn check_prepare_notebook(cells_with_markers: &[(&str, &str)], expect: &Expect) 
 #[test]
 fn callable_def() {
     check(
-        r#"
+        r"
         namespace Test {
             operation ◉Fo↘o◉(x : Int, y : Int, z : Int) : Unit {
                 ◉Foo◉(x, y, z);
@@ -61,14 +61,14 @@ fn callable_def() {
                 ◉Foo◉(x, y, z);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn callable_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             operation ◉Foo◉(x : Int, y : Int, z : Int) : Unit {
                 ◉Foo◉(x, y, z);
@@ -77,70 +77,70 @@ fn callable_ref() {
                 ◉Fo↘o◉(x, y, z);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter_def() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo(◉↘x◉ : Int, y : Int, z : Int) : Unit {
                 let temp = ◉x◉;
                 Foo(◉x◉, y, z);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo(◉x◉ : Int, y : Int, z : Int) : Unit {
                 let temp = ◉x◉;
                 Foo(◉↘x◉, y, z);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_def() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {
                 let ◉t↘emp◉ = x;
                 Foo(◉temp◉, y, ◉temp◉);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {
                 let ◉temp◉ = x;
                 Foo(◉t↘emp◉, y, ◉temp◉);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_def() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype ◉F↘oo◉ = (fst : Int, snd : Int);
             operation Bar(x : ◉Foo◉) : Unit {
@@ -148,14 +148,14 @@ fn udt_def() {
                 Bar(temp);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_constructor_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype ◉Foo◉ = (fst : Int, snd : Int);
             operation Bar(x : ◉Foo◉) : Unit {
@@ -163,14 +163,14 @@ fn udt_constructor_ref() {
                 Bar(temp);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype ◉Foo◉ = (fst : Int, snd : Int);
             operation Bar(x : ◉F↘oo◉) : Unit {
@@ -178,14 +178,14 @@ fn udt_ref() {
                 Bar(temp);
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_field_def() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype Foo = (◉f↘st◉ : Int, snd : Int);
             operation Bar(x : Foo) : Unit {
@@ -197,14 +197,14 @@ fn udt_field_def() {
                 Foo(1, 2)
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_field_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype Foo = (◉fst◉ : Int, snd : Int);
             operation Bar(x : Foo) : Unit {
@@ -216,14 +216,14 @@ fn udt_field_ref() {
                 Foo(1, 2)
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_field_complex_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             newtype Foo = (◉fst◉ : Int, snd : Int);
             operation Bar(x : Foo) : Unit {
@@ -235,43 +235,43 @@ fn udt_field_complex_ref() {
                 Foo(1, 2)
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_namespace() {
     assert_no_rename(
-        r#"
+        r"
         namespace Te↘st {
             operation Foo() : Unit {}
 
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_keyword() {
     assert_no_rename(
-        r#"
+        r"
         namespace Test {
             ope↘ration Foo() : Unit {}
 
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_non_udt_type() {
     assert_no_rename(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Un↘it {}
 
         }
-    "#,
+    ",
     );
 }
 
@@ -292,76 +292,76 @@ fn no_rename_string() {
 #[test]
 fn no_rename_comment() {
     assert_no_rename(
-        r#"
+        r"
         namespace Test {
             // He↘llo World!
             operation Foo() : Unit {}
 
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_std_item() {
     assert_no_rename(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 F↘ake();
             }
 
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_non_id_character() {
     assert_no_rename(
-        r#"
+        r"
         namespace Test {
             operation Foo() ↘: Unit {
                 Fake();
             }
 
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn no_rename_std_udt_return_type() {
     assert_no_rename(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : U↘dt {
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ty_param_def() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo<'◉↘T◉>(x : '◉T◉) : '◉T◉ { x }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ty_param_ref() {
     check(
-        r#"
+        r"
         namespace Test {
             operation Foo<'◉T◉>(x : '◉↘T◉) : '◉T◉ { x }
         }
-    "#,
+    ",
     );
 }
 
@@ -372,9 +372,9 @@ fn notebook_rename_defined_in_later_cell() {
             ("cell1", "C↘allee();"),
             ("cell2", "operation Callee() : Unit {}"),
         ],
-        &expect![[r#"
+        &expect![[r"
             None
-        "#]],
+        "]],
     );
 }
 

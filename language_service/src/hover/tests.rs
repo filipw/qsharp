@@ -58,14 +58,14 @@ fn check_notebook_none(cells_with_markers: &[(&str, &str)]) {
 #[test]
 fn callable_unit_types() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// Doc comment
             /// with multiple lines!
             operation ◉B↘ar◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Bar() : Unit
@@ -73,73 +73,73 @@ fn callable_unit_types() {
             ---
             Doc comment
             with multiple lines!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_with_callable_types() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// Doc comment!
             operation ◉F↘oo◉(x : (Int => Int)) : (Int => Int) {x}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo(x : (Int => Int)) : (Int => Int)
             ```
             ---
             Doc comment!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_with_type_params() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// Doc comment!
             operation ◉F↘oo◉<'A, 'B>(a : 'A, b : 'B) : 'B { b }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo<'A, 'B>(a : 'A, b : 'B) : 'B
             ```
             ---
             Doc comment!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit { ◉B↘ar◉(); }
 
             operation Bar() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Bar() : Unit
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_with_type_params_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let temp = ◉B↘ar◉(1, 2.0);
@@ -147,304 +147,304 @@ fn callable_with_type_params_ref() {
 
             operation Bar<'A, 'B>(a : 'A, b : 'B) : 'B { b }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Bar<'A, 'B>(a : 'A, b : 'B) : 'B
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_unit_types_functors() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// Doc comment!
             operation ◉F↘oo◉() : Unit is Ctl {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit is Ctl
             ```
             ---
             Doc comment!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_with_callable_types_functors() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// Doc comment!
             operation ◉F↘oo◉(x : (Int => Int is Ctl + Adj)) : (Int => Int is Adj) is Adj {x}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo(x : (Int => Int is Adj + Ctl)) : (Int => Int is Adj) is Adj
             ```
             ---
             Doc comment!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_ref_functors() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit { ◉B↘ar◉(); }
 
             operation Bar() : Unit is Adj {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Bar() : Unit is Adj
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(◉↘x◉ : Int) : Unit { let y = x; }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             x : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_param_with_type_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'A>(◉↘x◉ : 'A) : Unit { let y = x; }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             x : 'A
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_param_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int) : Unit { let y = ◉↘x◉; }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             x : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_param_with_type_param_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'A>(x : 'A) : Unit { let y = ◉↘x◉; }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             x : 'A
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_spec_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x: Int): Unit is Ctl {
                 body ... { let y = x; }
                 controlled (◉↘ctrl◉, ...) { let z = ctrl; }
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             ctrl : Qubit[]
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_spec_param_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x: Int): Unit is Ctl {
                 body ... { let y = x; }
                 controlled (ctrl, ...) { let z = ◉↘ctrl◉; }
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             ctrl : Qubit[]
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let ◉↘x◉ = 3;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             x : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_with_type_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'A>(a : 'A) : Unit {
                 let ◉↘x◉ = a;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             x : 'A
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let x = 3;
                 let y = ◉↘x◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             x : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_with_type_param_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'A>(a : 'A) : Unit {
                 let x = a;
                 let y = ◉↘x◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             x : 'A
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let (x, ◉↘y◉) = (3, 1.4);
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             y : Double
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_tuple_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let (x, y) = (3, 1.4);
                 let z = ◉↘y◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             y : Double
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_for_loop() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 for ◉↘i◉ in 0..10 {
@@ -452,20 +452,20 @@ fn identifier_for_loop() {
                 }
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             i : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_for_loop_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 for i in 0..10 {
@@ -473,20 +473,20 @@ fn identifier_for_loop_ref() {
                 }
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             i : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_nested_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let x = 3;
@@ -495,13 +495,13 @@ fn identifier_nested_ref() {
                 }
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             x : Int
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -517,12 +517,12 @@ fn lambda() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             local
             ```qsharp
             lambda : ((Double, String) => Int)
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -538,12 +538,12 @@ fn lambda_ref() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             local
             ```qsharp
             lambda : ((Double, String) => Int)
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -559,12 +559,12 @@ fn lambda_param() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             lambda parameter
             ```qsharp
             y : String
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -579,12 +579,12 @@ fn lambda_param_ref() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             lambda parameter
             ```qsharp
             y : String
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -600,19 +600,19 @@ fn lambda_closure_ref() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             local
             ```qsharp
             a : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn identifier_udt() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (fst : Int, snd : Int);
             operation Foo() : Unit {
@@ -620,29 +620,29 @@ fn identifier_udt() {
                 let b = ◉↘a◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             local
             ```qsharp
             a : Pair
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype ◉P↘air◉ = (Int, snd : Int);
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             newtype Pair = (Int, snd : Int)
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -657,18 +657,18 @@ fn udt_ref() {
             }
         }
     "#},
-        &expect![[r#"
+        &expect![[r"
             ```qsharp
             newtype Bar = (fst: Int, (snd: Int, Double, fourth: String), Double, sixth: Int)
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_ref_nested_udt() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (fst: Int, snd: Int);
             newtype Bar = (fst: Int, (snd : Int, Double, fourth: Pair), Double, sixth: Int);
@@ -676,73 +676,73 @@ fn udt_ref_nested_udt() {
                 Bar(3, (4, 2.1, Pair(14, 15)), 4.7, 2)
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             newtype Bar = (fst: Int, (snd: Int, Double, fourth: Pair), Double, sixth: Int)
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_anno_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (Int, snd : Int);
             operation Foo() : Unit {
                 let a : ◉P↘air◉ = Pair(3, 4);
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             newtype Pair = (Int, snd: Int)
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_constructor() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (Int, snd : Int);
             operation Foo() : Unit {
                 let a = ◉P↘air◉(3, 4);
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             newtype Pair = (Int, snd: Int)
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_field() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (Int, ◉s↘nd◉ : Int);
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             snd : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_field_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Pair = (Int, snd : Int);
             operation Foo() : Unit {
@@ -750,18 +750,18 @@ fn udt_field_ref() {
                 let b = a::◉s↘nd◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             snd : Int
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn primitive_type() {
-    check_none(indoc! {r#"
+    check_none(indoc! {r"
         namespace Test {
             newtype Pair = (◉I↘nt◉, snd : Int);
             operation Foo() : Unit {
@@ -769,81 +769,81 @@ fn primitive_type() {
                 let b = a::snd;
             }
         }
-    "#});
+    "});
 }
 
 #[test]
 fn foreign_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo() : Unit {
                 ◉F↘ake◉();
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             FakeStdLib
             operation Fake() : Unit
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn foreign_call_functors() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo() : Unit {
                 ◉F↘akeCtlAdj◉();
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             FakeStdLib
             operation FakeCtlAdj() : Unit is Adj + Ctl
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn foreign_call_with_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo() : Unit {
                 ◉FakeWi↘thParam◉(4);
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             FakeStdLib
             operation FakeWithParam(x : Int) : Unit
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Summary
             /// This is a
             /// multi-line summary!
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -851,14 +851,14 @@ fn callable_summary() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_stuff_before() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// not the summary
             /// # Summary
@@ -866,8 +866,8 @@ fn callable_summary_stuff_before() {
             /// multi-line summary!
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -875,14 +875,14 @@ fn callable_summary_stuff_before() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_other_header_before() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// This stuff is not the summary.
@@ -891,8 +891,8 @@ fn callable_summary_other_header_before() {
             /// multi-line summary!
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -900,14 +900,14 @@ fn callable_summary_other_header_before() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_other_header_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Summary
             /// This is a
@@ -916,8 +916,8 @@ fn callable_summary_other_header_after() {
             /// This stuff is not the summary.
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -925,14 +925,14 @@ fn callable_summary_other_header_after() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_other_headers() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// This stuff is not the summary.
@@ -943,8 +943,8 @@ fn callable_summary_other_headers() {
             /// This stuff is also not the summary.
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -952,14 +952,14 @@ fn callable_summary_other_headers() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_headers_but_no_summary() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// This stuff is not the summary.
@@ -967,8 +967,8 @@ fn callable_headers_but_no_summary() {
             /// This stuff is also not the summary.
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -978,14 +978,14 @@ fn callable_headers_but_no_summary() {
             This stuff is not the summary.
             # Also Not The Summary
             This stuff is also not the summary.
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_only_header_matches() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// This stuff is not the # Summary.
@@ -996,8 +996,8 @@ fn callable_summary_only_header_matches() {
             /// This stuff is also not the # Summary.
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -1005,14 +1005,14 @@ fn callable_summary_only_header_matches() {
             ---
             This is a
             multi-line # Summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_summary_successive_headers() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// # Summary
@@ -1020,8 +1020,8 @@ fn callable_summary_successive_headers() {
             /// multi-line summary!
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
@@ -1029,34 +1029,34 @@ fn callable_summary_successive_headers() {
             ---
             This is a
             multi-line summary!
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_empty_summary() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Not The Summary
             /// # Summary
             /// # Also Not The Summary
             operation ◉F↘oo◉() : Unit {}
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Unit
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn callable_param_doc() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
 
             /// Doc string
@@ -1076,8 +1076,8 @@ fn callable_param_doc() {
                 let y = ◉↘x◉;
             }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             parameter of `Foo`
             ```qsharp
             x : Int
@@ -1086,13 +1086,13 @@ fn callable_param_doc() {
             Doc string for `x`
             ### Note
             note for `x`
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn udt_field_incorrect() {
-    check_none(indoc! {r#"
+    check_none(indoc! {r"
         namespace Test {
             newtype Foo = (fst : Int, snd : Int);
             operation Bar() : Unit {
@@ -1100,72 +1100,72 @@ fn udt_field_incorrect() {
                 let x : Int = foo::◉n↘one◉;
             }
         }
-    "#});
+    "});
 }
 
 #[test]
 fn std_udt_return_type() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation ◉Fo↘o◉() : Udt {
         }
     }
-    "#,
-        &expect![[r#"
+    ",
+        &expect![[r"
             ```qsharp
             Test
             operation Foo() : Udt
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn std_callable_with_udt() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Udt {
             ◉Takes↘Udt◉()
         }
     }
-    "#,
-        &expect![[r#"
+    ",
+        &expect![[r"
             ```qsharp
             FakeStdLib
             function TakesUdt(input : Udt) : Udt
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn std_callable_with_type_param() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Unit {
             let temp = ◉FakeWi↘thTypeParam◉(3);
         }
     }
-    "#,
-        &expect![[r#"
+    ",
+        &expect![[r"
             ```qsharp
             FakeStdLib
             operation FakeWithTypeParam<'A>(a : 'A) : 'A
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn std_udt_udt_field() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Udt {
@@ -1173,46 +1173,46 @@ fn std_udt_udt_field() {
             f::inner::◉x◉↘
         }
     }
-    "#,
-        &expect![[r#"
+    ",
+        &expect![[r"
         ```qsharp
         x : Int
         ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn ty_param_def() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<◉'↘T◉>(x : 'T) : 'T { x }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             type parameter of `Foo`
             ```qsharp
             'T
             ```
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn ty_param_ref() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'T>(x : ◉'↘T◉) : 'T { x }
         }
-    "#},
-        &expect![[r#"
+    "},
+        &expect![[r"
             type parameter of `Foo`
             ```qsharp
             'T
             ```
-        "#]],
+        "]],
     );
 }
 
@@ -1223,11 +1223,11 @@ fn notebook_callable_def_across_cells() {
             ("cell1", "operation Callee() : Unit {}"),
             ("cell2", "◉C↘allee◉();"),
         ],
-        &expect![[r#"
+        &expect![[r"
             ```qsharp
             operation Callee() : Unit
             ```
-        "#]],
+        "]],
     );
 }
 

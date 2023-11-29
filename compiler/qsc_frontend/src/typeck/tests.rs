@@ -3373,12 +3373,12 @@ fn ambiguous_generic() {
 #[test]
 fn invalid_ident() {
     check(
-        r#"namespace NS {
+        r"namespace NS {
     function Foo() : () {
         let x : 'invalid = 0;
     }
 }
-        "#,
+        ",
         "",
         &expect![[r#"
             #6 31-33 "()" : Unit
@@ -3392,7 +3392,7 @@ fn invalid_ident() {
 #[test]
 fn undeclared_generic_param() {
     check(
-        r#"namespace c{operation y(g: 'U): Unit {} }"#,
+        r"namespace c{operation y(g: 'U): Unit {} }",
         "",
         &expect![[r#"
             #6 23-30 "(g: 'U)" : ?

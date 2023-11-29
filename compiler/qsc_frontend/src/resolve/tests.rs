@@ -121,7 +121,7 @@ fn global_callable() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
 
@@ -129,7 +129,7 @@ fn global_callable() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -143,13 +143,13 @@ fn global_callable_recursive() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -165,7 +165,7 @@ fn global_callable_internal() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 internal function item1() : Unit {}
 
@@ -173,7 +173,7 @@ fn global_callable_internal() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -211,7 +211,7 @@ fn global_path() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -221,7 +221,7 @@ fn global_path() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -241,7 +241,7 @@ fn open_namespace() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -253,7 +253,7 @@ fn open_namespace() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -273,7 +273,7 @@ fn open_alias() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -285,7 +285,7 @@ fn open_alias() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -303,7 +303,7 @@ fn prelude_callable() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -313,7 +313,7 @@ fn prelude_callable() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -333,7 +333,7 @@ fn parent_namespace_shadows_prelude() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -345,7 +345,7 @@ fn parent_namespace_shadows_prelude() {
                     item3();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -369,7 +369,7 @@ fn open_shadows_prelude() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -385,7 +385,7 @@ fn open_shadows_prelude() {
                     item3();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -438,14 +438,14 @@ fn local_var() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Int {
                     let local13 = 0;
                     local13
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -464,7 +464,7 @@ fn shadow_local() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Int {
                     let local13 = 0;
@@ -475,7 +475,7 @@ fn shadow_local() {
                     local13 + local17
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -489,13 +489,13 @@ fn callable_param() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1(local8 : Int) : Int {
                     local8
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -511,7 +511,7 @@ fn spec_param() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1(local8 : Qubit) : (Qubit[], Qubit) {
                     controlled (local23, ...) {
@@ -519,7 +519,7 @@ fn spec_param() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -569,7 +569,7 @@ fn local_shadows_global() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
 
@@ -579,7 +579,7 @@ fn local_shadows_global() {
                     local27
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -595,7 +595,7 @@ fn shadow_same_block() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Int {
                     let local13 = 0;
@@ -603,7 +603,7 @@ fn shadow_same_block() {
                     local17
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -625,7 +625,7 @@ fn parent_namespace_shadows_open() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -639,7 +639,7 @@ fn parent_namespace_shadows_open() {
                     item3();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -663,7 +663,7 @@ fn open_alias_shadows_global() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -679,7 +679,7 @@ fn open_alias_shadows_global() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -789,7 +789,7 @@ fn merged_aliases() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {}
             }
@@ -807,7 +807,7 @@ fn merged_aliases() {
                     item3();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -820,12 +820,12 @@ fn ty_decl() {
                 function B(a : A) : Unit {}
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = Unit;
                 function item2(local14 : item1) : Unit {}
             }
-        "#]],
+        "]],
     );
 }
 
@@ -876,12 +876,12 @@ fn ty_decl_in_ty_decl() {
                 newtype B = A;
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = Unit;
                 newtype item2 = item1;
             }
-        "#]],
+        "]],
     );
 }
 
@@ -893,11 +893,11 @@ fn ty_decl_recursive() {
                 newtype A = A;
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = item1;
             }
-        "#]],
+        "]],
     );
 }
 
@@ -913,7 +913,7 @@ fn ty_decl_cons() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = Unit;
 
@@ -921,7 +921,7 @@ fn ty_decl_cons() {
                     item1()
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1143,13 +1143,13 @@ fn lambda_param() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {
                     let local13 = local16 -> local16 + 1;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1165,7 +1165,7 @@ fn lambda_shadows_local() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Int {
                     let local13 = 1;
@@ -1173,7 +1173,7 @@ fn lambda_shadows_local() {
                     local13
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1189,7 +1189,7 @@ fn for_loop_range() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {
                     for local14 in 0..9 {
@@ -1197,7 +1197,7 @@ fn for_loop_range() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1213,7 +1213,7 @@ fn for_loop_var() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1(local8 : Int[]) : Unit {
                     for local20 in local8 {
@@ -1221,7 +1221,7 @@ fn for_loop_var() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1238,7 +1238,7 @@ fn repeat_until() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1() : Unit {
                     mutable local13 = false;
@@ -1247,7 +1247,7 @@ fn repeat_until() {
                     } until local13;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1267,7 +1267,7 @@ fn repeat_until_fixup() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1() : Unit {
                     mutable local13 = false;
@@ -1279,7 +1279,7 @@ fn repeat_until_fixup() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1330,7 +1330,7 @@ fn use_qubit() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1(local8 : Qubit) : Unit {
                     body intrinsic;
@@ -1340,7 +1340,7 @@ fn use_qubit() {
                     item1(local26);
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1359,7 +1359,7 @@ fn use_qubit_block() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1(local8 : Qubit) : Unit {
                     body intrinsic;
@@ -1370,7 +1370,7 @@ fn use_qubit_block() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1385,14 +1385,14 @@ fn local_function() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Int {
                     function item2() : Int { 2 }
                     item2() + 1
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1407,14 +1407,14 @@ fn local_function_use_before_declare() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : () {
                     item2();
                     function item2() : () {}
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1481,14 +1481,14 @@ fn local_type() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : () {
                     newtype item2 = Int;
                     let local18 = item2(5);
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1499,10 +1499,10 @@ fn local_open() {
             namespace A { function Foo() : () { open B; Bar(); } }
             namespace B { function Bar() : () {} }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 { function item1() : () { open B; item3(); } }
             namespace item2 { function item3() : () {} }
-        "#]],
+        "]],
     );
 }
 
@@ -1517,14 +1517,14 @@ fn local_open_shadows_parent_item() {
 
             namespace B { function Bar() : () {} }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : () {}
                 function item2() : () { open B; item4(); }
             }
 
             namespace item3 { function item4() : () {} }
-        "#]],
+        "]],
     );
 }
 
@@ -1540,7 +1540,7 @@ fn local_open_shadows_parent_open() {
             namespace B { function Bar() : () {} }
             namespace C { function Bar() : () {} }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 open B;
                 function item1() : () { open C; item5(); }
@@ -1548,7 +1548,7 @@ fn local_open_shadows_parent_open() {
 
             namespace item2 { function item3() : () {} }
             namespace item4 { function item5() : () {} }
-        "#]],
+        "]],
     );
 }
 
@@ -1564,7 +1564,7 @@ fn update_array_index_var() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : () {
                     let local11 = [2];
@@ -1572,7 +1572,7 @@ fn update_array_index_var() {
                     let local20 = local11 w/ local16 <- 3;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1588,7 +1588,7 @@ fn update_array_index_expr() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : () {
                     let local11 = [2];
@@ -1596,7 +1596,7 @@ fn update_array_index_expr() {
                     let local20 = local11 w/ local16 + 1 <- 3;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1613,7 +1613,7 @@ fn update_udt_known_field_name() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = (First : Int, Second : Int);
 
@@ -1622,7 +1622,7 @@ fn update_udt_known_field_name() {
                     let local34 = local24 w/ First <- 3;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1667,7 +1667,7 @@ fn update_udt_unknown_field_name() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = (First : Int, Second : Int);
 
@@ -1676,7 +1676,7 @@ fn update_udt_unknown_field_name() {
                     let local34 = local24 w/ Third <- 3;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1695,7 +1695,7 @@ fn update_udt_unknown_field_name_known_global() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 newtype item1 = (First : Int, Second : Int);
 
@@ -1706,7 +1706,7 @@ fn update_udt_unknown_field_name_known_global() {
                     let local40 = local30 w/ Third <- 3;
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1738,13 +1738,13 @@ fn empty_namespace_works() {
             }
             namespace B {}
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 open B;
                 function item1(): Unit{}
             }
             namespace item2 {}
-        "#]],
+        "]],
     );
 }
 
@@ -1765,7 +1765,7 @@ fn cyclic_namespace_dependency_supported() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 open B;
                 operation item1() : Unit {
@@ -1778,7 +1778,7 @@ fn cyclic_namespace_dependency_supported() {
                     item1();
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1797,7 +1797,7 @@ fn bind_items_in_repeat() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1() : Unit {
                     repeat {
@@ -1808,7 +1808,7 @@ fn bind_items_in_repeat() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1824,7 +1824,7 @@ fn bind_items_in_qubit_use_block() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 operation item1() : Unit {
                     use local13 = Qubit() {
@@ -1832,7 +1832,7 @@ fn bind_items_in_qubit_use_block() {
                     }
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1849,7 +1849,7 @@ fn use_bound_item_in_another_bound_item() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1() : Unit {
                     function item2() : Unit {
@@ -1858,7 +1858,7 @@ fn use_bound_item_in_another_bound_item() {
                     function item3() : Unit {}
                 }
             }
-        "#]],
+        "]],
     );
 }
 
@@ -1894,13 +1894,13 @@ fn resolve_local_generic() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             namespace item0 {
                 function item1<param0>(local9: param0) : param0 {
                     local9
                 }
             }
-        "#]],
+        "]],
     );
 }
 

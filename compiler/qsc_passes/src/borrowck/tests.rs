@@ -23,7 +23,7 @@ fn check(expr: &str, expect: &Expect) {
 fn assign_invalid_expr() {
     check(
         "set 0 = 1",
-        &expect![[r#"
+        &expect![[r"
             [
                 Unassignable(
                     Span {
@@ -32,7 +32,7 @@ fn assign_invalid_expr() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -44,7 +44,7 @@ fn assignop_mutability_expr() {
             set x or= true;
             x
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 Mutability(
                     Span {
@@ -53,7 +53,7 @@ fn assignop_mutability_expr() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -65,7 +65,7 @@ fn assignupdate_immutable_expr() {
             set x w/= 2 <- 4;
             x
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 Mutability(
                     Span {
@@ -74,7 +74,7 @@ fn assignupdate_immutable_expr() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -85,7 +85,7 @@ fn block_mutable_immutable_expr() {
             let x = 0;
             set x = 1;
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 Mutability(
                     Span {
@@ -94,7 +94,7 @@ fn block_mutable_immutable_expr() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -105,9 +105,9 @@ fn block_mutable_expr() {
             mutable x = 0;
             set x = 1;
         }"},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -115,7 +115,7 @@ fn block_mutable_expr() {
 fn for_loop_iterator_immutable_expr() {
     check(
         "for i in 0..10 { set i = 0; }",
-        &expect![[r#"
+        &expect![[r"
             [
                 Mutability(
                     Span {
@@ -124,7 +124,7 @@ fn for_loop_iterator_immutable_expr() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -135,7 +135,7 @@ fn complex_expr_not_assignable() {
             mutable (x, y) = (0, 0);
             set if false { x } else { y } = 1;
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 Unassignable(
                     Span {
@@ -144,7 +144,7 @@ fn complex_expr_not_assignable() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -155,7 +155,7 @@ fn lambda_mutable_closure() {
             mutable x = 1;
             let f = y -> x + y;
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 MutableClosure(
                     Span {
@@ -164,6 +164,6 @@ fn lambda_mutable_closure() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }

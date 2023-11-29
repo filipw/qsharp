@@ -57,19 +57,19 @@ fn check(source_with_markers: &str, expect: &Expect) {
 #[test]
 fn callable() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation ◉F↘oo◉() : Unit {
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn callable_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation ◉Callee◉() : Unit {
         }
@@ -78,77 +78,77 @@ fn callable_ref() {
             C↘allee();
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn variable() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo() : Unit {
             let ◉↘x◉ = 3;
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn variable_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo() : Unit {
             let ◉x◉ = 3;
             let y = ↘x;
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(◉↘x◉: Int) : Unit {
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(◉x◉: Int) : Unit {
             let y = ↘x;
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉B↘ar◉ = (a: Int, b: Double);
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉Bar◉ = (a: Int, b: Double);
 
@@ -156,14 +156,14 @@ fn udt_ref() {
             let x = B↘ar(1, 2.3);
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref_sig() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉Bar◉ = (a: Int, b: Double);
 
@@ -171,28 +171,28 @@ fn udt_ref_sig() {
             Bar(1, 2.3)
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref_param() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉Bar◉ = (a: Int, b: Double);
 
         operation Foo(x: B↘ar) : Unit {
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref_anno() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉Bar◉ = (a: Int, b: Double);
 
@@ -200,37 +200,37 @@ fn udt_ref_anno() {
             let x: B↘ar = Bar(1, 2.3);
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref_ty_def() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype ◉Bar◉ = (a: Int, b: Double);
         newtype Foo = (a: B↘ar, b: Double);
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_field() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype Pair = (◉f↘st◉: Int, snd: Double);
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_field_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         newtype Pair = (fst: Int, ◉snd◉: Double);
         operation Foo() : Unit {
@@ -238,35 +238,35 @@ fn udt_field_ref() {
             let b = a::s↘nd;
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn lambda_param() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo() : Unit {
             let local = (◉↘x◉, y) => x;
             let z = local(1, 2.3);
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn lambda_param_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo() : Unit {
             let local = (◉x◉, y) => ↘x;
             let z = local(1, 2.3);
         }
     }
-    "#,
+    ",
     );
 }
 
@@ -288,14 +288,14 @@ fn lambda_closure_ref() {
 #[test]
 fn std_call() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Unit {
             F↘ake();
         }
     }
-    "#,
+    ",
         &expect![[r#"
             Some(
                 Location {
@@ -313,7 +313,7 @@ fn std_call() {
 #[test]
 fn other_namespace_call_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         open Other;
         operation Foo() : Unit {
@@ -324,14 +324,14 @@ fn other_namespace_call_ref() {
     namespace Other {
         operation ◉Bar◉() : Unit {}
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter_ref_with_body_specialization() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(◉x◉: Int) : Unit is Adj {
             body ... {
@@ -339,14 +339,14 @@ fn parameter_ref_with_body_specialization() {
             }
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn parameter_ref_with_adj_specialization() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(◉x◉: Int) : Unit is Adj {
             body ... {}
@@ -355,28 +355,28 @@ fn parameter_ref_with_adj_specialization() {
             }
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ctl_specialization_parameter() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(x: Int) : Unit is Ctl {
             body ... {}
             controlled (◉c↘s◉, ...) {}
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ctl_specialization_parameter_ref() {
     assert_definition(
-        r#"
+        r"
     namespace Test {
         operation Foo(x: Int) : Unit is Ctl {
             body ... {}
@@ -385,19 +385,19 @@ fn ctl_specialization_parameter_ref() {
             }
         }
     }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn std_udt() {
     check(
-        r#"
+        r"
     namespace Test {
         operation Foo() : FakeStdLib.Ud↘t {
         }
     }
-    "#,
+    ",
         &expect![[r#"
             Some(
                 Location {
@@ -415,7 +415,7 @@ fn std_udt() {
 #[test]
 fn std_udt_udt_field() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Udt {
@@ -423,7 +423,7 @@ fn std_udt_udt_field() {
             f::inner::x↘
         }
     }
-    "#,
+    ",
         &expect![[r#"
             Some(
                 Location {
@@ -441,22 +441,22 @@ fn std_udt_udt_field() {
 #[test]
 fn ty_param_def() {
     assert_definition(
-        r#"
+        r"
         namespace Test {
             operation Foo<◉'↘T◉>(x : 'T) : 'T { x }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ty_param_ref() {
     assert_definition(
-        r#"
+        r"
         namespace Test {
             operation Foo<◉'T◉>(x : '↘T) : 'T { x }
         }
-    "#,
+    ",
     );
 }
 

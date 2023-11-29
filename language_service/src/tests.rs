@@ -22,9 +22,9 @@ fn no_error() {
 
     expect_errors(
         &errors,
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -202,9 +202,9 @@ fn package_type_update_causes_error() {
 
     expect_errors(
         &errors,
-        &expect![[r#"
+        &expect![[r"
             []
-    "#]],
+    "]],
     );
 
     ls.update_configuration(&WorkspaceConfigurationUpdate {
@@ -325,14 +325,14 @@ fn target_profile_update_causes_error_in_stdlib() {
     ls.update_document(
         "foo.qs",
         1,
-        r#"namespace Foo { @EntryPoint() operation Main() : Unit { use q = Qubit(); let r = M(q); let b = Microsoft.Quantum.Convert.ResultAsBool(r); } }"#,
+        r"namespace Foo { @EntryPoint() operation Main() : Unit { use q = Qubit(); let r = M(q); let b = Microsoft.Quantum.Convert.ResultAsBool(r); } }",
     );
 
     expect_errors(
         &errors,
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 
     ls.update_configuration(&WorkspaceConfigurationUpdate {
@@ -401,9 +401,9 @@ fn notebook_document_no_errors() {
 
     expect_errors(
         &errors,
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 

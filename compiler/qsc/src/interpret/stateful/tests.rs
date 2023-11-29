@@ -125,20 +125,20 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     syntax error: expected `;`, found EOF
                        [line_0] []
-                "#]],
+                "]],
             );
 
             let (result, output) = line(&mut interpreter, "y");
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `y` not found
                        [line_1] [y]
-                "#]],
+                "]],
             );
         }
 
@@ -150,22 +150,22 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `x` not found
                        [line_0] [x]
                     type error: insufficient type information to infer type
                        [line_0] [y]
-                "#]],
+                "]],
             );
 
             let (result, output) = line(&mut interpreter, "y");
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     runtime error: name is not bound
                        [line_1] [y]
-                "#]],
+                "]],
             );
         }
 
@@ -176,10 +176,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     runtime error: division by zero
                       cannot divide by zero [line_0] [0]
-                "#]],
+                "]],
             );
         }
 
@@ -209,19 +209,19 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `invalid` not found
                        [line_0] [invalid]
-                "#]],
+                "]],
             );
             let (result, output) = line(&mut interpreter, "Foo()");
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     runtime error: name is not bound
                        [line_1] [Foo]
-                "#]],
+                "]],
             );
         }
 
@@ -341,10 +341,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     type error: insufficient type information to infer type
                        [line_0] [[]]
-                "#]],
+                "]],
             );
             let (result, output) = line(&mut interpreter, "let x = []; let y = [0] + x;");
             is_only_value(&result, &output, &Value::unit());
@@ -352,10 +352,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     type error: insufficient type information to infer type
                        [line_2] [[]]
-                "#]],
+                "]],
             );
         }
 
@@ -368,10 +368,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     type error: expected Double, found Int
                        [line_1] [[0.0] + x]
-                "#]],
+                "]],
             );
         }
 
@@ -398,10 +398,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     cannot update immutable variable
                        [line_2] [y]
-                "#]],
+                "]],
             );
             let (result, output) = line(&mut interpreter, "let lam = () -> y + [0];");
             is_only_value(&result, &output, &Value::unit());
@@ -409,10 +409,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     lambdas cannot close over mutable variables
                        [line_4] [() -> x + [0]]
-                "#]],
+                "]],
             );
         }
 
@@ -428,10 +428,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     runtime error: empty range
                       the range cannot be empty [line_0] [(2,1)]
-                "#]],
+                "]],
             );
         }
 
@@ -451,14 +451,14 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `DumpMachine` could refer to the item in `Other` or `Microsoft.Quantum.Diagnostics`
                       ambiguous name [line_3] [DumpMachine]
                       found in this namespace [line_1] [Other]
                       and also in this namespace [line_2] [Microsoft.Quantum.Diagnostics]
                     type error: insufficient type information to infer type
                        [line_3] [DumpMachine()]
-                "#]],
+                "]],
             );
         }
 
@@ -469,10 +469,10 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     runtime error: qubits in gate invocation are not unique
                        [intrinsic.qs] [(control, target)]
-                "#]],
+                "]],
             );
         }
 
@@ -481,13 +481,13 @@ mod given_interpreter {
             let mut interpreter = get_interpreter();
             let (result, output) = line(
                 &mut interpreter,
-                indoc! {r#"
+                indoc! {r"
                     function A() : Unit {
                         B();
                     }
                     function B() : Unit {}
                     A()
-                "#},
+                "},
             );
             is_only_value(&result, &output, &Value::unit());
         }
@@ -497,10 +497,10 @@ mod given_interpreter {
             let mut interpreter = get_interpreter();
             let (result, output) = line(
                 &mut interpreter,
-                indoc! {r#"
+                indoc! {r"
                     B();
                     function B() : Unit {}
-                "#},
+                "},
             );
             is_only_value(&result, &output, &Value::unit());
         }
@@ -510,12 +510,12 @@ mod given_interpreter {
             let mut interpreter = get_interpreter();
             let (result, output) = line(
                 &mut interpreter,
-                indoc! {r#"
+                indoc! {r"
                     A.B();
                     namespace A {
                         function B() : Unit {}
                     }
-                "#},
+                "},
             );
             is_only_value(&result, &output, &Value::unit());
         }
@@ -525,7 +525,7 @@ mod given_interpreter {
             let mut interpreter = get_interpreter();
             let (result, output) = line(
                 &mut interpreter,
-                indoc! {r#"
+                indoc! {r"
                     A.B();
                     namespace A {
                         open C;
@@ -540,7 +540,7 @@ mod given_interpreter {
                             E();
                         }
                     }
-                "#},
+                "},
             );
             is_only_value(&result, &output, &Value::unit());
         }
@@ -749,12 +749,12 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `Bar` not found
                        [line_1] [Bar]
                     type error: insufficient type information to infer type
                        [line_1] [Bar()]
-                "#]],
+                "]],
             );
         }
 
@@ -777,10 +777,10 @@ mod given_interpreter {
                 .expect_err("expected error");
             is_error(
                 &res,
-                &expect![[r#"
+                &expect![[r"
                 syntax error: expected EOF, found `;`
                    [<entry>] [;]
-            "#]],
+            "]],
             );
         }
 
@@ -861,12 +861,12 @@ mod given_interpreter {
             is_only_error(
                 &result,
                 &output,
-                &expect![[r#"
+                &expect![[r"
                     name error: `Bar` not found
                        [line_2] [Bar]
                     type error: insufficient type information to infer type
                        [line_2] [Bar()]
-                "#]],
+                "]],
             );
         }
 
@@ -947,10 +947,10 @@ mod given_interpreter {
                 .expect_err("expected qirgen to fail");
             is_error(
                 &res,
-                &expect![[r#"
+                &expect![[r"
                 non-Result return type in entry expression
                    [<entry>] [1]
-            "#]],
+            "]],
             );
         }
 
@@ -1026,12 +1026,12 @@ mod given_interpreter {
             );
             is_only_value(&result, &output, &Value::unit());
             let (results, output) = run(&mut interpreter, "Foo()", 5);
-            expect![[r#"
+            expect![[r"
                 hello!
                 hello!
                 hello!
                 hello!
-                hello!"#]]
+                hello!"]]
             .assert_eq(&output);
             let results = results.expect("run() should succeed");
             assert_eq!(results.len(), 5);

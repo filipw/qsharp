@@ -296,10 +296,10 @@ fn dump_machine() {
     check_intrinsic_output(
         "",
         "Microsoft.Quantum.Diagnostics.DumpMachine()",
-        &expect![[r#"
+        &expect![[r"
             STATE:
             |0⟩: 1+0i
-        "#]],
+        "]],
     );
 }
 
@@ -311,10 +311,10 @@ fn dump_machine_qubit_count() {
             use qs = Qubit[4];
             Microsoft.Quantum.Diagnostics.DumpMachine();
         }"},
-        &expect![[r#"
+        &expect![[r"
             STATE:
             |0000⟩: 1+0i
-        "#]],
+        "]],
     );
 }
 
@@ -328,10 +328,10 @@ fn dump_machine_endianness() {
             Microsoft.Quantum.Diagnostics.DumpMachine();
             X(qs[1]);
         }"},
-        &expect![[r#"
+        &expect![[r"
             STATE:
             |0010⟩: 1+0i
-        "#]],
+        "]],
     );
 }
 
@@ -340,9 +340,9 @@ fn message() {
     check_intrinsic_output(
         "",
         r#"Message("Hello, World!")"#,
-        &expect![[r#"
+        &expect![[r"
             Hello, World!
-        "#]],
+        "]],
     );
 }
 
@@ -1092,10 +1092,10 @@ fn qubit_nested_bind_not_released() {
             Microsoft.Quantum.Diagnostics.DumpMachine();
             X(q);
         }"},
-        &expect![[r#"
+        &expect![[r"
             STATE:
             |10⟩: 1+0i
-        "#]],
+        "]],
     );
 }
 

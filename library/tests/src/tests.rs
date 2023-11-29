@@ -30,7 +30,7 @@ fn check_exp_with_cnot() {
     // This decomposition only holds if the magnitude of the angle used in Exp is correct and if the
     // sign convention between Rx, Rz, and Exp is consistent.
     test_expression(
-        indoc! {r#"{
+        indoc! {r"{
             open Microsoft.Quantum.Diagnostics;
             open Microsoft.Quantum.Math;
 
@@ -50,7 +50,7 @@ fn check_exp_with_cnot() {
             }
 
             CheckAllZero([aux, control, target])
-        }"#},
+        }"},
         &Value::Bool(true),
     );
 }
@@ -59,7 +59,7 @@ fn check_exp_with_cnot() {
 fn check_exp_with_swap() {
     // This decomposition only holds if the magnitude of the angle used in Exp is correct.
     test_expression(
-        indoc! {r#"{
+        indoc! {r"{
             open Microsoft.Quantum.Diagnostics;
             open Microsoft.Quantum.Math;
 
@@ -79,7 +79,7 @@ fn check_exp_with_swap() {
             }
 
             CheckAllZero([aux] + qs)
-        }"#},
+        }"},
         &Value::Bool(true),
     );
 }

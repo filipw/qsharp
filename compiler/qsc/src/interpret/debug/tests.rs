@@ -27,7 +27,7 @@ fn eval(interpreter: &mut stateful::Interpreter) -> (Result<Value, Vec<stateful:
 
 #[test]
 fn stack_traces_can_cross_eval_session_and_file_boundaries() {
-    let source1 = indoc! { r#"
+    let source1 = indoc! { r"
         namespace Test {
             operation B(input : Int) : Unit is Adj {
                 body ... {
@@ -43,8 +43,8 @@ fn stack_traces_can_cross_eval_session_and_file_boundaries() {
                 adjoint self;
             }
         }
-        "#};
-    let source2 = indoc! { r#"
+        "};
+    let source2 = indoc! { r"
         namespace Test2 {
             open Test;
             operation A(input : Int) : Unit is Adj {
@@ -54,7 +54,7 @@ fn stack_traces_can_cross_eval_session_and_file_boundaries() {
                 adjoint invert;
             }
         }
-        "#};
+        "};
 
     let source_map = SourceMap::new(
         [
@@ -81,14 +81,14 @@ fn stack_traces_can_cross_eval_session_and_file_boundaries() {
                 .stack_trace()
                 .as_ref()
                 .expect("code should have a valid stack trace");
-            let expectation = indoc! {r#"
+            let expectation = indoc! {r"
                          Error: division by zero
                          Call stack:
                              at Adjoint Test.C in 1.qs
                              at Adjoint Test.B in 1.qs
                              at Adjoint Test2.A in 2.qs
                              at Z in line_0
-                    "#};
+                    "};
             assert_eq!(expectation, stack_trace);
         }
     }
@@ -96,7 +96,7 @@ fn stack_traces_can_cross_eval_session_and_file_boundaries() {
 
 #[test]
 fn stack_traces_can_cross_file_and_entry_boundaries() {
-    let source1 = indoc! { r#"
+    let source1 = indoc! { r"
         namespace Test {
             operation B(input : Int) : Unit is Adj {
                 body ... {
@@ -112,8 +112,8 @@ fn stack_traces_can_cross_file_and_entry_boundaries() {
                 adjoint self;
             }
         }
-        "#};
-    let source2 = indoc! { r#"
+        "};
+    let source2 = indoc! { r"
         namespace Test2 {
             open Test;
             operation A(input : Int) : Unit is Adj {
@@ -123,7 +123,7 @@ fn stack_traces_can_cross_file_and_entry_boundaries() {
                 adjoint invert;
             }
         }
-        "#};
+        "};
 
     let source_map = SourceMap::new(
         [
@@ -144,13 +144,13 @@ fn stack_traces_can_cross_file_and_entry_boundaries() {
                 .stack_trace()
                 .as_ref()
                 .expect("code should have a valid stack trace");
-            let expectation = indoc! {r#"
+            let expectation = indoc! {r"
                          Error: division by zero
                          Call stack:
                              at Adjoint Test.C in 1.qs
                              at Adjoint Test.B in 1.qs
                              at Adjoint Test2.A in 2.qs
-                    "#};
+                    "};
             assert_eq!(expectation, stack_trace);
         }
     }

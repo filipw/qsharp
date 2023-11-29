@@ -19,7 +19,7 @@ fn check(source_with_markers: &str, expect: &Expect) {
 #[test]
 fn first_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar() : Unit {
@@ -27,7 +27,7 @@ fn first_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -76,7 +76,7 @@ fn first_argument() {
 #[test]
 fn mid_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar() : Unit {
@@ -84,7 +84,7 @@ fn mid_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -133,7 +133,7 @@ fn mid_argument() {
 #[test]
 fn second_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar() : Unit {
@@ -141,7 +141,7 @@ fn second_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -190,7 +190,7 @@ fn second_argument() {
 #[test]
 fn last_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar() : Unit {
@@ -198,7 +198,7 @@ fn last_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -361,7 +361,7 @@ fn revisit_second_argument() {
 #[test]
 fn nested_call_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar(a : Int, b : Double) : Double { b }
@@ -370,7 +370,7 @@ fn nested_call_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -412,7 +412,7 @@ fn nested_call_argument() {
 #[test]
 fn nested_call_second_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Double, z : String) : Unit {}
             operation Bar(a : Int, b : Double) : Double { b }
@@ -421,7 +421,7 @@ fn nested_call_second_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -463,7 +463,7 @@ fn nested_call_second_argument() {
 #[test]
 fn tuple_argument() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : (Int, Double), z : String) : Unit {}
             operation Bar() : Unit {
@@ -471,7 +471,7 @@ fn tuple_argument() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -520,7 +520,7 @@ fn tuple_argument() {
 #[test]
 fn tuple_argument_first_item() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : (Int, Double), z : String) : Unit {}
             operation Bar() : Unit {
@@ -528,7 +528,7 @@ fn tuple_argument_first_item() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -577,7 +577,7 @@ fn tuple_argument_first_item() {
 #[test]
 fn tuple_argument_last_item() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : (Int, Double), z : String) : Unit {}
             operation Bar() : Unit {
@@ -585,7 +585,7 @@ fn tuple_argument_last_item() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -634,7 +634,7 @@ fn tuple_argument_last_item() {
 #[test]
 fn tuple_argument_after_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : (Int, Double), z : String) : Unit {}
             operation Bar() : Unit {
@@ -642,7 +642,7 @@ fn tuple_argument_after_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -691,7 +691,7 @@ fn tuple_argument_after_tuple() {
 #[test]
 fn arguments_in_nested_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -699,7 +699,7 @@ fn arguments_in_nested_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -762,7 +762,7 @@ fn arguments_in_nested_tuple() {
 #[test]
 fn first_inner_argument_in_nested_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -770,7 +770,7 @@ fn first_inner_argument_in_nested_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -833,7 +833,7 @@ fn first_inner_argument_in_nested_tuple() {
 #[test]
 fn second_inner_argument_in_nested_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -841,7 +841,7 @@ fn second_inner_argument_in_nested_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1117,7 +1117,7 @@ fn argument_nested_tuple_after_last() {
 #[test]
 fn nested_tuple_mismatch_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1125,7 +1125,7 @@ fn nested_tuple_mismatch_after() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1188,7 +1188,7 @@ fn nested_tuple_mismatch_after() {
 #[test]
 fn nested_tuple_mismatch_mid() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1196,7 +1196,7 @@ fn nested_tuple_mismatch_mid() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1259,7 +1259,7 @@ fn nested_tuple_mismatch_mid() {
 #[test]
 fn nested_tuple_mismatch_before() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1267,7 +1267,7 @@ fn nested_tuple_mismatch_before() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1486,7 +1486,7 @@ fn nested_tuple_not_enough_after() {
 #[test]
 fn nested_tuple_not_enough_single_end() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1494,7 +1494,7 @@ fn nested_tuple_not_enough_single_end() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1557,7 +1557,7 @@ fn nested_tuple_not_enough_single_end() {
 #[test]
 fn nested_tuple_not_enough_single_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1565,7 +1565,7 @@ fn nested_tuple_not_enough_single_after() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1628,7 +1628,7 @@ fn nested_tuple_not_enough_single_after() {
 #[test]
 fn nested_tuple_not_enough_empty_end() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1636,7 +1636,7 @@ fn nested_tuple_not_enough_empty_end() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1699,7 +1699,7 @@ fn nested_tuple_not_enough_empty_end() {
 #[test]
 fn nested_tuple_not_enough_empty_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(w : Int, (x : Double, y : String), z : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1707,7 +1707,7 @@ fn nested_tuple_not_enough_empty_after() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1770,7 +1770,7 @@ fn nested_tuple_not_enough_empty_after() {
 #[test]
 fn nested_empty_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, (), y : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1778,7 +1778,7 @@ fn nested_empty_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1827,7 +1827,7 @@ fn nested_empty_tuple() {
 #[test]
 fn nested_empty_tuple_mid() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, (), y : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1835,7 +1835,7 @@ fn nested_empty_tuple_mid() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1884,7 +1884,7 @@ fn nested_empty_tuple_mid() {
 #[test]
 fn nested_empty_tuple_end() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, (), y : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1892,7 +1892,7 @@ fn nested_empty_tuple_end() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1941,7 +1941,7 @@ fn nested_empty_tuple_end() {
 #[test]
 fn nested_empty_tuple_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, (), y : Bool) : Unit {}
             operation Bar() : Unit {
@@ -1949,7 +1949,7 @@ fn nested_empty_tuple_after() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -1998,7 +1998,7 @@ fn nested_empty_tuple_after() {
 #[test]
 fn multi_nested_tuple() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(a : Int, (b : Int, (c : Int, d : Int), e : Int), f : Int) : Unit {}
             operation Bar() : Unit {
@@ -2006,7 +2006,7 @@ fn multi_nested_tuple() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2091,7 +2091,7 @@ fn multi_nested_tuple() {
 #[test]
 fn documentation_test() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             /// # Summary
             /// This is the operation `Foo`.
@@ -2114,7 +2114,7 @@ fn documentation_test() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2212,7 +2212,7 @@ fn documentation_test() {
 #[test]
 fn single_parameter_end() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(a : Int) : Unit {}
             operation Bar() : Unit {
@@ -2220,7 +2220,7 @@ fn single_parameter_end() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2255,7 +2255,7 @@ fn single_parameter_end() {
 #[test]
 fn single_parameter_after() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(a : Int) : Unit {}
             operation Bar() : Unit {
@@ -2263,7 +2263,7 @@ fn single_parameter_after() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2298,7 +2298,7 @@ fn single_parameter_after() {
 #[test]
 fn single_parameter_before() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(a : Int) : Unit {}
             operation Bar() : Unit {
@@ -2306,7 +2306,7 @@ fn single_parameter_before() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2341,7 +2341,7 @@ fn single_parameter_before() {
 #[test]
 fn indirect_local_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {}
             operation Bar() : Unit {
@@ -2350,7 +2350,7 @@ fn indirect_local_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2399,7 +2399,7 @@ fn indirect_local_call() {
 #[test]
 fn indirect_array_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {}
             operation Bar() : Unit {
@@ -2408,7 +2408,7 @@ fn indirect_array_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2457,7 +2457,7 @@ fn indirect_array_call() {
 #[test]
 fn indirect_block_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {}
             operation Bar() : Unit {
@@ -2465,7 +2465,7 @@ fn indirect_block_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2514,7 +2514,7 @@ fn indirect_block_call() {
 #[test]
 fn indirect_unresolved_lambda_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Bar() : Unit {
                 let foo = (x, y, z) => {};
@@ -2522,7 +2522,7 @@ fn indirect_unresolved_lambda_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2571,7 +2571,7 @@ fn indirect_unresolved_lambda_call() {
 #[test]
 fn indirect_partially_resolved_lambda_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Bar() : Unit {
                 let foo = (x, y, z) => {};
@@ -2579,7 +2579,7 @@ fn indirect_partially_resolved_lambda_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2628,7 +2628,7 @@ fn indirect_partially_resolved_lambda_call() {
 #[test]
 fn indirect_resolved_lambda_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Bar() : Unit {
                 let foo = (x, y, z) => {};
@@ -2637,7 +2637,7 @@ fn indirect_resolved_lambda_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2686,7 +2686,7 @@ fn indirect_resolved_lambda_call() {
 #[test]
 fn controlled_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit is Ctl {}
             operation Bar() : Unit {
@@ -2694,7 +2694,7 @@ fn controlled_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2757,7 +2757,7 @@ fn controlled_call() {
 #[test]
 fn double_controlled_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit is Ctl {}
             operation Bar() : Unit {
@@ -2765,7 +2765,7 @@ fn double_controlled_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2842,7 +2842,7 @@ fn double_controlled_call() {
 #[test]
 fn partial_application_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int, y : Int, z : Int) : Unit {}
             operation Bar() : Unit {
@@ -2851,7 +2851,7 @@ fn partial_application_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2893,7 +2893,7 @@ fn partial_application_call() {
 #[test]
 fn indirect_no_params_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo() : Unit {
                 let foo = Foo;
@@ -2901,7 +2901,7 @@ fn indirect_no_params_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2929,7 +2929,7 @@ fn indirect_no_params_call() {
 #[test]
 fn indirect_single_param_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo(x : Int) : Unit {
                 let foo = Foo;
@@ -2937,7 +2937,7 @@ fn indirect_single_param_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -2972,7 +2972,7 @@ fn indirect_single_param_call() {
 #[test]
 fn udt_constructor_call() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             newtype Foo = (fst : Int, snd : Double);
             operation Bar(x : Int) : Unit {
@@ -2980,7 +2980,7 @@ fn udt_constructor_call() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -3022,14 +3022,14 @@ fn udt_constructor_call() {
 #[test]
 fn std_callable_with_udt() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Udt {
             TakesUdt(↘)
         }
     }
-    "#,
+    ",
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -3064,7 +3064,7 @@ fn std_callable_with_udt() {
 #[test]
 fn indirect_callable_with_std_udt_args() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Udt {
@@ -3072,7 +3072,7 @@ fn indirect_callable_with_std_udt_args() {
             callee(↘)
         }
     }
-    "#,
+    ",
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -3107,7 +3107,7 @@ fn indirect_callable_with_std_udt_args() {
 #[test]
 fn indirect_callable_with_std_udt() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Unit {
@@ -3115,7 +3115,7 @@ fn indirect_callable_with_std_udt() {
             fn!(↘)
         }
     }
-    "#,
+    ",
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -3150,7 +3150,7 @@ fn indirect_callable_with_std_udt() {
 #[test]
 fn indirect_callable_with_std_udt_with_params() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Unit {
@@ -3158,7 +3158,7 @@ fn indirect_callable_with_std_udt_with_params() {
             fn!(↘)
         }
     }
-    "#,
+    ",
         &expect![[r#"
     SignatureHelp {
         signatures: [
@@ -3193,7 +3193,7 @@ fn indirect_callable_with_std_udt_with_params() {
 #[test]
 fn call_with_type_param() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Foo<'A, 'B>(a : 'A, b : 'B) : 'B { b }
             operation Bar() : Unit {
@@ -3201,7 +3201,7 @@ fn call_with_type_param() {
                 let x = 3;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             SignatureHelp {
                 signatures: [
@@ -3243,14 +3243,14 @@ fn call_with_type_param() {
 #[test]
 fn std_callable_with_type_params() {
     check(
-        r#"
+        r"
     namespace Test {
         open FakeStdLib;
         operation Foo() : Unit {
             let temp = FakeWithTypeParam(↘);
         }
     }
-    "#,
+    ",
         &expect![[r#"
             SignatureHelp {
                 signatures: [

@@ -50,7 +50,7 @@ fn check(program: &str, expr: Option<&str>, expect: &Expect) {
 #[test]
 fn simple_entry_program_is_valid() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Sample {
         @EntryPoint()
         operation Entry() : Result
@@ -60,7 +60,7 @@ fn simple_entry_program_is_valid() {
             M(q)
         }
     }
-        "#},
+        "},
         None,
         &expect![[r#"
             %Result = type opaque
@@ -119,13 +119,13 @@ fn simple_entry_program_is_valid() {
 fn simple_program_is_valid() {
     check(
         "",
-        Some(indoc! {r#"
+        Some(indoc! {r"
         {
             use q = Qubit();
             H(q);
             M(q)
         }
-        "#}),
+        "}),
         &expect![[r#"
             %Result = type opaque
             %Qubit = type opaque

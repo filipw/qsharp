@@ -77,7 +77,7 @@ fn check_notebook_exclude_decl(cells_with_markers: &[(&str, &str)]) {
 #[test]
 fn std_callable_ref() {
     check_with_std(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo() : Unit {
@@ -86,7 +86,7 @@ fn std_callable_ref() {
                 Fake();
             }
         }
-    "#},
+    "},
         &expect![[r#"
             [
                 Location {
@@ -118,49 +118,49 @@ fn std_callable_ref() {
 #[test]
 fn callable_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation ◉F↘oo◉() : Unit {
                 ◉Foo◉();
                 ◉Foo◉();
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn callable_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation ◉Foo◉() : Unit {
                 ◉Fo↘o◉();
                 ◉Foo◉();
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn callable_exclude_def() {
     check_exclude_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 ◉Fo↘o◉();
                 ◉Foo◉();
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             newtype ◉B↘ar◉ = (fst : Int, snd : Int);
             operation Foo(x : ◉Bar◉) : Unit {
@@ -168,14 +168,14 @@ fn udt_def() {
                 let baz = bar::fst;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             newtype ◉Bar◉ = (fst : Int, snd : Int);
             operation Foo(x : ◉B↘ar◉) : Unit {
@@ -183,14 +183,14 @@ fn udt_ref() {
                 let baz = bar::fst;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_ref_constructor() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             newtype ◉Bar◉ = (fst : Int, snd : Int);
             operation Foo(x : ◉Bar◉) : Unit {
@@ -198,14 +198,14 @@ fn udt_ref_constructor() {
                 let baz = bar::fst;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn udt_exclude_def() {
     check_exclude_decl(
-        r#"
+        r"
         namespace Test {
             newtype Bar = (fst : Int, snd : Int);
             operation Foo(x : ◉B↘ar◉) : Unit {
@@ -213,19 +213,19 @@ fn udt_exclude_def() {
                 let baz = bar::fst;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn std_udt_ref() {
     check_with_std(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo(x : U↘dt) : Unit {}
         }
-    "#},
+    "},
         &expect![[r#"
             [
                 Location {
@@ -250,7 +250,7 @@ fn std_udt_ref() {
 #[test]
 fn field_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             newtype Bar = (◉f↘st◉ : Int, snd : Int);
             operation Foo() : Unit {
@@ -258,14 +258,14 @@ fn field_def() {
                 let baz = bar::◉fst◉;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn field_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             newtype Bar = (◉fst◉ : Int, snd : Int);
             operation Foo() : Unit {
@@ -273,14 +273,14 @@ fn field_ref() {
                 let baz = bar::◉f↘st◉;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn field_exclude_def() {
     check_exclude_decl(
-        r#"
+        r"
         namespace Test {
             newtype Bar = (fst : Int, snd : Int);
             operation Foo() : Unit {
@@ -288,14 +288,14 @@ fn field_exclude_def() {
                 let baz = bar::◉f↘st◉;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn std_field_ref() {
     check_with_std(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             open FakeStdLib;
             operation Foo() : Unit {
@@ -303,7 +303,7 @@ fn std_field_ref() {
                 let baz = bar::↘x;
             }
         }
-    "#},
+    "},
         &expect![[r#"
             [
                 Location {
@@ -328,7 +328,7 @@ fn std_field_ref() {
 #[test]
 fn local_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 let ◉z↘ip◉ = 3;
@@ -339,14 +339,14 @@ fn local_def() {
                 let zap = zip;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 let ◉zip◉ = 3;
@@ -357,14 +357,14 @@ fn local_ref() {
                 let zap = zip;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn param_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo(◉b↘ar◉ : Int) : Unit {
                 let lambda = (bar, baz) => {
@@ -373,14 +373,14 @@ fn param_def() {
                 let zip = ◉bar◉;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn param_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo(bar : Int) : Unit {
                 let lambda = (◉bar◉, baz) => {
@@ -389,14 +389,14 @@ fn param_ref() {
                 let zip = bar;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_shadow_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 let bar = 3;
@@ -407,14 +407,14 @@ fn local_shadow_def() {
                 let baz = bar;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_shadow_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 let bar = 3;
@@ -425,43 +425,43 @@ fn local_shadow_ref() {
                 let baz = bar;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn local_exclude_def() {
     check_exclude_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo() : Unit {
                 let b↘ar = 3;
                 let baz = ◉bar◉;
             }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ty_param_def() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo<◉'↘T◉>(x : ◉'T◉) : ◉'T◉ { x }
         }
-    "#,
+    ",
     );
 }
 
 #[test]
 fn ty_param_ref() {
     check_include_decl(
-        r#"
+        r"
         namespace Test {
             operation Foo<◉'T◉>(x : ◉'↘T◉) : ◉'T◉ { x }
         }
-    "#,
+    ",
     );
 }
 

@@ -30,7 +30,7 @@ fn funcs_cannot_use_conj() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 Conjugate(
                     Span {
@@ -39,7 +39,7 @@ fn funcs_cannot_use_conj() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -51,7 +51,7 @@ fn funcs_cannot_have_functors() {
                 function A() : Unit is Adj {}
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 Functor(
                     Span {
@@ -60,7 +60,7 @@ fn funcs_cannot_have_functors() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -75,7 +75,7 @@ fn funcs_cannot_call_ops() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 OpCall(
                     Span {
@@ -84,7 +84,7 @@ fn funcs_cannot_call_ops() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -98,7 +98,7 @@ fn funcs_cannot_allocate_qubits() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 QubitAlloc(
                     Span {
@@ -107,7 +107,7 @@ fn funcs_cannot_allocate_qubits() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -121,7 +121,7 @@ fn funcs_cannot_use_repeat() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 Repeat(
                     Span {
@@ -130,7 +130,7 @@ fn funcs_cannot_use_repeat() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -145,7 +145,7 @@ fn funcs_cannot_have_specs() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 Spec(
                     Span {
@@ -160,6 +160,6 @@ fn funcs_cannot_have_specs() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }

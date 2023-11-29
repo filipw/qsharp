@@ -35,7 +35,7 @@ fn generate_specs_body_intrinsic_should_fail() {
             }
         }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 MissingBody(
                     Span {
@@ -44,7 +44,7 @@ fn generate_specs_body_intrinsic_should_fail() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -335,7 +335,7 @@ fn generate_ctl_op_missing_functor() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 CtlGen(
                     MissingCtlFunctor(
@@ -346,7 +346,7 @@ fn generate_ctl_op_missing_functor() {
                     ),
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -428,7 +428,7 @@ fn generate_ctl_with_function_calls() {
 #[test]
 fn generate_adj_self() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -436,7 +436,7 @@ fn generate_adj_self() {
                     adjoint self;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-168] (Public):
@@ -485,7 +485,7 @@ fn generate_adj_self() {
 #[test]
 fn generate_ctladj_self() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Ctl + Adj {}
                 operation A(q : Qubit) : Unit is Ctl + Adj {
@@ -493,7 +493,7 @@ fn generate_ctladj_self() {
                     adjoint self;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-180] (Public):
@@ -574,7 +574,7 @@ fn generate_ctladj_self() {
 #[test]
 fn generate_adj_invert() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -582,7 +582,7 @@ fn generate_adj_invert() {
                     B(2);
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-141] (Public):
@@ -633,7 +633,7 @@ fn generate_adj_invert() {
 #[test]
 fn generate_adj_auto() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -644,7 +644,7 @@ fn generate_adj_auto() {
                     adjoint auto;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-200] (Public):
@@ -695,7 +695,7 @@ fn generate_adj_auto() {
 #[test]
 fn generate_adj_invert_skips_within_block() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -709,7 +709,7 @@ fn generate_adj_invert_skips_within_block() {
                     }
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-238] (Public):
@@ -778,7 +778,7 @@ fn generate_adj_invert_skips_within_block() {
 #[test]
 fn generate_adj_invert_with_if_exprs() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -789,7 +789,7 @@ fn generate_adj_invert_with_if_exprs() {
                     B(7);
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-268] (Public):
@@ -905,7 +905,7 @@ fn generate_adj_invert_with_if_exprs() {
 #[test]
 fn generate_adj_invert_with_range_loop() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -915,7 +915,7 @@ fn generate_adj_invert_with_range_loop() {
                     }
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-183] (Public):
@@ -1010,7 +1010,7 @@ fn generate_adj_invert_with_range_loop() {
 #[test]
 fn generate_adj_invert_with_array_loop() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -1020,7 +1020,7 @@ fn generate_adj_invert_with_array_loop() {
                     }
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-190] (Public):
@@ -1104,7 +1104,7 @@ fn generate_adj_invert_with_array_loop() {
 #[test]
 fn generate_adj_invert_with_nested_loops() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Adj {}
                 operation A(q : Qubit) : Unit is Adj {
@@ -1119,7 +1119,7 @@ fn generate_adj_invert_with_nested_loops() {
                     }
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-320] (Public):
@@ -1256,14 +1256,14 @@ fn generate_adj_invert_with_nested_loops() {
 #[test]
 fn generate_ctladj_distribute() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Ctl + Adj {}
                 operation A(q : Qubit) : Unit is Ctl + Adj {
                     body ... { B(1); B(2); }
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-158] (Public):
@@ -1348,7 +1348,7 @@ fn generate_ctladj_distribute() {
 #[test]
 fn generate_ctladj_auto_to_distribute() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Ctl + Adj {}
                 operation A(q : Qubit) : Unit is Ctl + Adj {
@@ -1356,7 +1356,7 @@ fn generate_ctladj_auto_to_distribute() {
                     controlled adjoint auto;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-191] (Public):
@@ -1441,7 +1441,7 @@ fn generate_ctladj_auto_to_distribute() {
 #[test]
 fn generate_ctladj_auto_to_invert() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Ctl + Adj {}
                 operation A(q : Qubit) : Unit is Ctl + Adj {
@@ -1450,7 +1450,7 @@ fn generate_ctladj_auto_to_invert() {
                     controlled adjoint auto;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-272] (Public):
@@ -1535,7 +1535,7 @@ fn generate_ctladj_auto_to_invert() {
 #[test]
 fn generate_ctladj_invert() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation B(input : Int) : Unit is Ctl + Adj {}
                 operation A(q : Qubit) : Unit is Ctl + Adj {
@@ -1543,7 +1543,7 @@ fn generate_ctladj_invert() {
                     controlled adjoint invert;
                 }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-193] (Public):
@@ -1628,13 +1628,13 @@ fn generate_ctladj_invert() {
 #[test]
 fn lambda_adj_calls_adj() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace A {
                 operation X(q : Qubit) : () is Adj {}
                 operation Foo(op : Qubit => () is Adj) : () {}
                 operation Bar() : () { Foo(q => X(q)); }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-153] (Public):
@@ -1711,14 +1711,14 @@ fn lambda_adj_calls_adj() {
 #[test]
 fn lambda_adj_calls_non_adj() {
     check(
-        indoc! {r#"
+        indoc! {r"
             namespace A {
                 operation M(q : Qubit) : Result { Zero }
                 operation Foo(op : Qubit => () is Adj) : () {}
                 operation Bar() : () { Foo(q => { M(q); }); }
             }
-        "#},
-        &expect![[r#"
+        "},
+        &expect![[r"
             [
                 AdjGen(
                     MissingAdjFunctor(
@@ -1729,7 +1729,7 @@ fn lambda_adj_calls_non_adj() {
                     ),
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -1858,7 +1858,7 @@ fn op_array_unsupported_functors_with_lambdas() {
                 }
             }
         ",
-        &expect![[r#"
+        &expect![[r"
             [
                 CtlGen(
                     MissingCtlFunctor(
@@ -1901,6 +1901,6 @@ fn op_array_unsupported_functors_with_lambdas() {
                     ),
                 ),
             ]
-        "#]],
+        "]],
     );
 }

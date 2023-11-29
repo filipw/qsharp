@@ -352,9 +352,9 @@ fn replace_node() {
     let SpecBody::Impl(_, block) = &callable.body.body else {
         panic!("callable body have a block")
     };
-    expect![[r#"
+    expect![[r"
         Block 4 [39-56] [Type Int]:
-            Stmt 5 [49-50]: Expr: Expr 8 [49-50] [Type Int]: Lit: Int(2)"#]]
+            Stmt 5 [49-50]: Expr: Expr 8 [49-50] [Type Int]: Lit: Int(2)"]]
     .assert_eq(&block.to_string());
 }
 
@@ -1044,8 +1044,8 @@ fn unimplemented_attribute_avoids_ambiguous_error_with_duplicate_names_in_scope(
         None,
     );
     let unit = compile(&store, &[lib], sources, TargetProfile::Full);
-    expect![[r#"
+    expect![[r"
         []
-    "#]]
+    "]]
     .assert_debug_eq(&unit.errors);
 }

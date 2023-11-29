@@ -26,9 +26,9 @@ fn simple_program_is_valid() {
             H(q);
             M(q)
         }"},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -45,9 +45,9 @@ fn intrinsic_calls_with_supported_returns_are_valid() {
             Foo();
             Bar()
         }"},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -61,7 +61,7 @@ fn result_comparison_error() {
                 X(q);
             }
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 ReturnNonResult(
                     Span {
@@ -76,7 +76,7 @@ fn result_comparison_error() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -84,7 +84,7 @@ fn result_comparison_error() {
 fn result_literal_error() {
     check(
         indoc! {"(One, Zero)"},
-        &expect![[r#"
+        &expect![[r"
             [
                 ResultLiteral(
                     Span {
@@ -99,7 +99,7 @@ fn result_literal_error() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -112,7 +112,7 @@ fn non_result_return_error() {
             M(q);
             3 + 1
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 ReturnNonResult(
                     Span {
@@ -121,7 +121,7 @@ fn non_result_return_error() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -132,7 +132,7 @@ fn unit_return_error() {
             operation Foo() : Unit {}
             Foo()
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 ReturnNonResult(
                     Span {
@@ -141,7 +141,7 @@ fn unit_return_error() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -153,7 +153,7 @@ fn unsupported_intrsinsic_error() {
                 body intrinsic;
             }
         }"},
-        &expect![[r#"
+        &expect![[r"
             [
                 ReturnNonResult(
                     Span {
@@ -168,6 +168,6 @@ fn unsupported_intrsinsic_error() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }

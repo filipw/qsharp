@@ -12,7 +12,7 @@ use std::io::Cursor;
 mod given_interpreter_with_sources {
     use super::*;
 
-    static STEPPING_SOURCE: &str = r#"
+    static STEPPING_SOURCE: &str = r"
         namespace Test {
             @EntryPoint()
             operation A() : Int {
@@ -31,7 +31,7 @@ mod given_interpreter_with_sources {
                 let p = (m + n) + o;
                 p
             }
-        }"#;
+        }";
     #[cfg(test)]
     mod step {
         use super::*;

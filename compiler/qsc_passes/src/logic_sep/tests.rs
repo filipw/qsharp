@@ -78,9 +78,9 @@ fn pure_classical_block_produces_empty_quantum_stmts() {
 fn op_calls_are_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = 4; Z(q);}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -88,10 +88,10 @@ fn op_calls_are_quantum_stmts() {
 fn if_with_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = true; if val {Z(q);}}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
             if val {Z(q);}
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -99,11 +99,11 @@ fn if_with_op_call_is_quantum_stmts() {
 fn if_else_with_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = true; if val {Z(q);} else {I(q);}}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
             if val {Z(q);} else {I(q);}
             Z(q);
-            I(q);"#]],
+            I(q);"]],
     );
 }
 
@@ -117,22 +117,22 @@ fn if_without_op_call_not_quantum_stmts() {
 
 #[test]
 fn qubit_scope_expr_is_quantum_stmts() {
-    check("{use q = Qubit(); X(q); use scope_q = Qubit() {let val = 4; CNOT(q, scope_q); let val2 = val + 1;} Z(q);}", &expect![[r#"
+    check("{use q = Qubit(); X(q); use scope_q = Qubit() {let val = 4; CNOT(q, scope_q); let val2 = val + 1;} Z(q);}", &expect![[r"
         X(q);
         use scope_q = Qubit() {let val = 4; CNOT(q, scope_q); let val2 = val + 1;}
         CNOT(q, scope_q);
-        Z(q);"#]]);
+        Z(q);"]]);
 }
 
 #[test]
 fn if_with_nested_if_with_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = true; if val { if val { Z(q);}}}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
             if val { if val { Z(q);}}
             if val { Z(q);}
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -140,11 +140,11 @@ fn if_with_nested_if_with_op_call_is_quantum_stmts() {
 fn if_with_nested_if_with_mix_of_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = true; if val { if val { Z(q);} if val {let x = 1;}}}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
             if val { if val { Z(q);} if val {let x = 1;}}
             if val { Z(q);}
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -152,11 +152,11 @@ fn if_with_nested_if_with_mix_of_op_call_is_quantum_stmts() {
 fn if_with_nested_conjugate_with_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); X(q); let val = true; if val { within { Z(q);} apply {}}}",
-        &expect![[r#"
+        &expect![[r"
             X(q);
             if val { within { Z(q);} apply {}}
             within { Z(q);} apply {}
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -164,11 +164,11 @@ fn if_with_nested_conjugate_with_op_call_is_quantum_stmts() {
 fn conjugate_with_op_call_is_quantum_stmts() {
     check(
         "{use q = Qubit(); within {X(q); let val = 0;} apply {Y(q); let val2 = 1;} let val = 2; Z(q);}",
-        &expect![[r#"
+        &expect![[r"
             within {X(q); let val = 0;} apply {Y(q); let val2 = 1;}
             X(q);
             Y(q);
-            Z(q);"#]],
+            Z(q);"]],
     );
 }
 
@@ -176,7 +176,7 @@ fn conjugate_with_op_call_is_quantum_stmts() {
 fn conjugate_without_op_call_not_quantum_stmts() {
     check(
         "{use q = Qubit(); within {let val = 0;} apply {let val2 = 1;} let val = 2; Z(q);}",
-        &expect![[r#"Z(q);"#]],
+        &expect![[r"Z(q);"]],
     );
 }
 
@@ -184,9 +184,9 @@ fn conjugate_without_op_call_not_quantum_stmts() {
 fn for_loop_with_op_call_is_quantum_stmts() {
     check(
         "{use qs = Qubit[2]; for q in qs { X(q); let val = 4; }}",
-        &expect![[r#"
+        &expect![[r"
             for q in qs { X(q); let val = 4; }
-            X(q);"#]],
+            X(q);"]],
     );
 }
 
@@ -254,7 +254,7 @@ fn non_unit_block_allowed_in_classical_context() {
 fn op_call_in_binding_forbidden() {
     check(
         "{let x = {use q = Qubit(); X(q); false};}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -263,7 +263,7 @@ fn op_call_in_binding_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -271,7 +271,7 @@ fn op_call_in_binding_forbidden() {
 fn op_call_in_qubit_binding_forbidden() {
     check(
         "{use qs = Qubit[{use q = Qubit(); X(q); 3}];}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -280,7 +280,7 @@ fn op_call_in_qubit_binding_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -288,7 +288,7 @@ fn op_call_in_qubit_binding_forbidden() {
 fn op_call_in_callee_forbidden() {
     check(
         "{use q = Qubit(); (if true {use q = Qubit(); X(q); Z} else {I})(q);}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -297,7 +297,7 @@ fn op_call_in_callee_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -305,7 +305,7 @@ fn op_call_in_callee_forbidden() {
 fn op_call_in_args_forbidden() {
     check(
         "{use q = Qubit(); let _ = Length([{use q = Qubit(); X(q);}]);}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -314,7 +314,7 @@ fn op_call_in_args_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -322,7 +322,7 @@ fn op_call_in_args_forbidden() {
 fn op_call_in_iter_expr_forbidden() {
     check(
         "{use q = Qubit(); for _ in [X(q)] {}}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -331,7 +331,7 @@ fn op_call_in_iter_expr_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -339,7 +339,7 @@ fn op_call_in_iter_expr_forbidden() {
 fn op_call_in_if_cond_forbidden() {
     check(
         "{use q = Qubit(); if X(q) == () {}}",
-        &expect![[r#"
+        &expect![[r"
         [
             OpCallForbidden(
                 Span {
@@ -348,7 +348,7 @@ fn op_call_in_if_cond_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -356,7 +356,7 @@ fn op_call_in_if_cond_forbidden() {
 fn op_call_in_interpolated_string_forbidden() {
     check(
         r#"{ use q = Qubit(); let x = $"foo {X(q)}"; }"#,
-        &expect![[r#"
+        &expect![[r"
             [
                 OpCallForbidden(
                     Span {
@@ -365,7 +365,7 @@ fn op_call_in_interpolated_string_forbidden() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -373,7 +373,7 @@ fn op_call_in_interpolated_string_forbidden() {
 fn assign_forbidden() {
     check(
         "{mutable val = 0; set val = 1;}",
-        &expect![[r#"
+        &expect![[r"
         [
             ExprForbidden(
                 Span {
@@ -382,7 +382,7 @@ fn assign_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -390,7 +390,7 @@ fn assign_forbidden() {
 fn assignop_forbidden() {
     check(
         "{mutable val = 0; set val += 1;}",
-        &expect![[r#"
+        &expect![[r"
         [
             ExprForbidden(
                 Span {
@@ -399,7 +399,7 @@ fn assignop_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -407,7 +407,7 @@ fn assignop_forbidden() {
 fn assignupate_forbidden() {
     check(
         "{mutable val = [0]; set val w/= 0 <- 1;}",
-        &expect![[r#"
+        &expect![[r"
         [
             ExprForbidden(
                 Span {
@@ -416,7 +416,7 @@ fn assignupate_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -424,7 +424,7 @@ fn assignupate_forbidden() {
 fn repeat_loop_forbidden() {
     check(
         "{repeat{}until true;}",
-        &expect![[r#"
+        &expect![[r"
         [
             ExprForbidden(
                 Span {
@@ -433,7 +433,7 @@ fn repeat_loop_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -441,7 +441,7 @@ fn repeat_loop_forbidden() {
 fn while_loop_forbidden() {
     check(
         "{while true {}}",
-        &expect![[r#"
+        &expect![[r"
         [
             ExprForbidden(
                 Span {
@@ -450,7 +450,7 @@ fn while_loop_forbidden() {
                 },
             ),
         ]
-    "#]],
+    "]],
     );
 }
 
@@ -458,7 +458,7 @@ fn while_loop_forbidden() {
 fn return_forbidden() {
     check(
         "{return 4;}",
-        &expect![[r#"
+        &expect![[r"
             [
                 ExprForbidden(
                     Span {
@@ -467,6 +467,6 @@ fn return_forbidden() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }

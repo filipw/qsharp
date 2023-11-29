@@ -333,7 +333,7 @@ fn conjugate_invalid_op_fails() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 AdjGen(
                     MissingAdjFunctor(
@@ -352,7 +352,7 @@ fn conjugate_invalid_op_fails() {
                     ),
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -374,7 +374,7 @@ fn conjugate_not_separable_fail() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 AdjGen(
                     LogicSep(
@@ -387,7 +387,7 @@ fn conjugate_not_separable_fail() {
                     ),
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -410,7 +410,7 @@ fn conjugate_mutable_update_in_apply_fail() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 ApplyAssign(
                     Span {
@@ -419,7 +419,7 @@ fn conjugate_mutable_update_in_apply_fail() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -441,7 +441,7 @@ fn conjugate_return_in_apply_fail() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 ReturnForbidden(
                     Span {
@@ -450,7 +450,7 @@ fn conjugate_return_in_apply_fail() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 

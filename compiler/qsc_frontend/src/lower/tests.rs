@@ -53,9 +53,9 @@ fn test_entrypoint_attr_allowed() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -95,9 +95,9 @@ fn test_target_profile_base_attr_allowed() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -112,9 +112,9 @@ fn test_target_profile_full_attr_allowed() {
                 }
             }
         "},
-        &expect![[r#"
+        &expect![[r"
             []
-        "#]],
+        "]],
     );
 }
 
@@ -1186,13 +1186,13 @@ fn lambda_operation_closure() {
 #[test]
 fn lambda_adj() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace A {
                 operation X(q : Qubit) : () is Adj {}
                 operation Foo(op : Qubit => () is Adj) : () {}
                 operation Bar() : () { Foo(q => X(q)); }
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-153] (Public):
@@ -1574,7 +1574,7 @@ fn body_missing_should_fail() {
             }
         }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 MissingBody(
                     Span {
@@ -1583,7 +1583,7 @@ fn body_missing_should_fail() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -1598,7 +1598,7 @@ fn duplicate_specialization() {
             }
         }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 DuplicateSpec(
                     Span {
@@ -1613,7 +1613,7 @@ fn duplicate_specialization() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -1629,7 +1629,7 @@ fn duplicate_specialization_with_gen() {
             }
         }
         "},
-        &expect![[r#"
+        &expect![[r"
             [
                 DuplicateSpec(
                     Span {
@@ -1650,7 +1650,7 @@ fn duplicate_specialization_with_gen() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -1859,14 +1859,14 @@ fn partial_app_hole_as_callee() {
 #[test]
 fn invalid_elided() {
     check_errors(
-        indoc! {r#"
+        indoc! {r"
             namespace input {
                 operation Foo() : Unit {
                     let ... = 3;
                 }
             }
-        "#},
-        &expect![[r#"
+        "},
+        &expect![[r"
             [
                 InvalidElidedPat(
                     Span {
@@ -1875,22 +1875,22 @@ fn invalid_elided() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn invalid_spec_pat() {
     check_errors(
-        indoc! {r#"
+        indoc! {r"
             namespace input {
                 operation Foo() : Unit is Ctl {
                     body bar {}
                     controlled (foo, bar) {}
                 }
             }
-        "#},
-        &expect![[r#"
+        "},
+        &expect![[r"
             [
                 InvalidSpecPat(
                     Span {
@@ -1905,7 +1905,7 @@ fn invalid_spec_pat() {
                     },
                 ),
             ]
-        "#]],
+        "]],
     );
 }
 
@@ -2034,11 +2034,11 @@ fn lambda_with_invalid_free_variable() {
 #[test]
 fn duplicate_commas_in_tydef() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 newtype Foo = (Int,,);
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-45] (Public):
@@ -2057,11 +2057,11 @@ fn duplicate_commas_in_tydef() {
 #[test]
 fn duplicate_commas_in_generics() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 function Foo<'T,,>(x : 'T) : Unit {}
             }
-        "#},
+        "},
         &expect![[r#"
             Package:
                 Item 0 [0-59] (Public):
@@ -2087,12 +2087,12 @@ fn duplicate_commas_in_generics() {
 #[test]
 fn duplicate_commas_in_pat() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation Foo() : Unit {
                     let (x,,) = (1, 2);
                 }
-            }"#},
+            }"},
         &expect![[r#"
             Package:
                 Item 0 [0-81] (Public):
@@ -2122,12 +2122,12 @@ fn duplicate_commas_in_pat() {
 #[test]
 fn duplicate_commas_in_tuple() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation Foo() : Unit {
                     let x = (1,,3);
                 }
-            }"#},
+            }"},
         &expect![[r#"
             Package:
                 Item 0 [0-77] (Public):
@@ -2156,12 +2156,12 @@ fn duplicate_commas_in_tuple() {
 #[test]
 fn duplicate_commas_in_arg_tuple() {
     check_hir(
-        indoc! {r#"
+        indoc! {r"
             namespace test {
                 operation Foo(a : Int, b : Int, c : Int) : Int {
                     Foo(a,,c)
                 }
-            }"#},
+            }"},
         &expect![[r#"
             Package:
                 Item 0 [0-95] (Public):

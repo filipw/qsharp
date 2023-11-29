@@ -51,12 +51,12 @@ fn check_notebook(
 #[test]
 fn in_block_contains_std_functions() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         operation Test() : Unit {
             ↘
         }
-    }"#},
+    }"},
         &["Fake", "FakeWithParam", "FakeCtlAdj"],
         &expect![[r#"
             [
@@ -137,13 +137,13 @@ fn in_block_contains_std_functions() {
 #[test]
 fn in_block_no_auto_open() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         open FakeStdLib;
         operation Test() : Unit {
             ↘
         }
-    }"#},
+    }"},
         &["Fake"],
         &expect![[r#"
             [
@@ -168,13 +168,13 @@ fn in_block_no_auto_open() {
 #[test]
 fn in_block_with_alias() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         open FakeStdLib as Alias;
         operation Test() : Unit {
             ↘
         }
-    }"#},
+    }"},
         &["Alias.Fake"],
         &expect![[r#"
             [
@@ -199,7 +199,7 @@ fn in_block_with_alias() {
 #[test]
 fn in_block_from_other_namespace() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         operation Test() : Unit {
             ↘
@@ -207,7 +207,7 @@ fn in_block_from_other_namespace() {
     }
     namespace Other {
         operation Foo() : Unit {}
-    }"#},
+    }"},
         &["Foo"],
         &expect![[r#"
             [
@@ -243,13 +243,13 @@ fn in_block_from_other_namespace() {
 #[test]
 fn in_block_nested_op() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         operation Test() : Unit {
             operation Foo() : Unit {}
             ↘
         }
-    }"#},
+    }"},
         &["Foo"],
         &expect![[r#"
             [
@@ -274,7 +274,7 @@ fn in_block_nested_op() {
 #[test]
 fn in_block_hidden_nested_op() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         operation Test() : Unit {
             ↘
@@ -282,25 +282,25 @@ fn in_block_hidden_nested_op() {
         operation Foo() : Unit {
             operation Bar() : Unit {}
         }
-    }"#},
+    }"},
         &["Bar"],
-        &expect![[r#"
+        &expect![[r"
             [
                 None,
             ]
-        "#]],
+        "]],
     );
 }
 
 #[test]
 fn in_namespace_contains_open() {
     check(
-        indoc! {r#"
+        indoc! {r"
     namespace Test {
         ↘
         operation Test() : Unit {
         }
-    }"#},
+    }"},
         &["open"],
         &expect![[r#"
             [
@@ -323,10 +323,10 @@ fn in_namespace_contains_open() {
 #[test]
 fn top_level_contains_namespace() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {}
         ↘
-        "#},
+        "},
         &["namespace"],
         &expect![[r#"
             [
@@ -349,11 +349,11 @@ fn top_level_contains_namespace() {
 #[test]
 fn attributes() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             ↘
         }
-        "#},
+        "},
         &["@EntryPoint()"],
         &expect![[r#"
             [
@@ -376,12 +376,12 @@ fn attributes() {
 #[test]
 fn stdlib_udt() {
     check(
-        indoc! {r#"
+        indoc! {r"
         namespace Test {
             operation Test() : Unit {
                 ↘
             }
-        "#},
+        "},
         &["TakesUdt"],
         &expect![[r#"
             [
@@ -418,9 +418,9 @@ fn notebook_top_level() {
     check_notebook(
         &[(
             "cell1",
-            indoc! {r#"operation Foo() : Unit {}
+            indoc! {r"operation Foo() : Unit {}
             ↘
-        "#},
+        "},
         )],
         &["operation", "namespace", "let", "Fake"],
         &expect![[r#"
@@ -491,9 +491,9 @@ fn notebook_top_level_global() {
     check_notebook(
         &[(
             "cell1",
-            indoc! {r#"operation Foo() : Unit {}
+            indoc! {r"operation Foo() : Unit {}
             ↘
-        "#},
+        "},
         )],
         &["Fake"],
         &expect![[r#"
@@ -531,11 +531,11 @@ fn notebook_top_level_namespace_already_open_for_global() {
     check_notebook(
         &[(
             "cell1",
-            indoc! {r#"
+            indoc! {r"
             open FakeStdLib;
             operation Foo() : Unit {}
             ↘
-        "#},
+        "},
         )],
         &["Fake"],
         &expect![[r#"
@@ -563,10 +563,10 @@ fn notebook_block() {
     check_notebook(
         &[(
             "cell1",
-            indoc! {r#"operation Foo() : Unit {
+            indoc! {r"operation Foo() : Unit {
                 ↘
             }
-        "#},
+        "},
         )],
         &["Fake", "let"],
         &expect![[r#"
