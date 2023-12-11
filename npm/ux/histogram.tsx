@@ -27,7 +27,7 @@ const defaultMenuSelection: { [idx: string]: number } = {
   labels: 0,
 };
 
-const reKetResult = /^\[(?:(Zero|One), *)*(Zero|One)\]$/;
+const reKetResult = /^[[(](?:(Zero|One), *)*(Zero|One)[\])]$/;
 function resultToKet(result: string): string {
   if (typeof result !== "string") return "ERROR";
 
