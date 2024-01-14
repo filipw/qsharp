@@ -12,10 +12,10 @@ use qsc_eval::{
     debug::{map_hir_package_to_fir, Frame},
     eval_expr,
     output::GenericReceiver,
-    val::{GlobalId, Value},
-    Env, Error, Global, NodeLookup, State,
+    val::Value,
+    Env, Error, State,
 };
-use qsc_fir::fir::{BlockId, ExprId, ItemKind, PackageId, PatId, StmtId};
+use qsc_fir::fir;
 use qsc_frontend::compile::PackageStore;
 use qsc_hir::hir::{self};
 use std::fmt::{Display, Write};
@@ -31,28 +31,25 @@ pub fn generate_qir(
     package: hir::PackageId,
 ) -> std::result::Result<String, (Error, Vec<Frame>)> {
     let mut fir_lowerer = qsc_eval::lower::Lowerer::new();
-    let mut fir_store = IndexMap::new();
-    let package = map_hir_package_to_fir(package);
-    let mut sim = BaseProfSim::default();
-
-    for (id, unit) in store.iter() {
+    let mut fir_store = fir::PackageStore::new();
+    for (id, unit) in store {
         fir_store.insert(
             map_hir_package_to_fir(id),
             fir_lowerer.lower_package(&unit.package),
         );
     }
 
+    let package = map_hir_package_to_fir(package);
     let unit = fir_store.get(package).expect("store should have package");
     let entry_expr = unit.entry.expect("package should have entry");
 
+    let mut sim = BaseProfSim::default();
     let mut stdout = std::io::sink();
     let mut out = GenericReceiver::new(&mut stdout);
     let result = eval_expr(
         &mut State::new(package),
         entry_expr,
-        &Lookup {
-            fir_store: &fir_store,
-        },
+        &fir_store,
         &mut Env::with_empty_scope(),
         &mut sim,
         &mut out,
@@ -63,66 +60,14 @@ pub fn generate_qir(
     }
 }
 
-struct Lookup<'a> {
-    fir_store: &'a IndexMap<PackageId, qsc_fir::fir::Package>,
-}
-
-impl<'a> Lookup<'a> {
-    fn get_package(&self, package: PackageId) -> &qsc_fir::fir::Package {
-        self.fir_store
-            .get(package)
-            .expect("Package should be in FIR store")
-    }
-}
-
-impl<'a> NodeLookup for Lookup<'a> {
-    fn get(&self, id: GlobalId) -> Option<Global<'a>> {
-        get_global(self.fir_store, id)
-    }
-    fn get_block(&self, package: PackageId, id: BlockId) -> &qsc_fir::fir::Block {
-        self.get_package(package)
-            .blocks
-            .get(id)
-            .expect("BlockId should have been lowered")
-    }
-    fn get_expr(&self, package: PackageId, id: ExprId) -> &qsc_fir::fir::Expr {
-        self.get_package(package)
-            .exprs
-            .get(id)
-            .expect("ExprId should have been lowered")
-    }
-    fn get_pat(&self, package: PackageId, id: PatId) -> &qsc_fir::fir::Pat {
-        self.get_package(package)
-            .pats
-            .get(id)
-            .expect("PatId should have been lowered")
-    }
-    fn get_stmt(&self, package: PackageId, id: StmtId) -> &qsc_fir::fir::Stmt {
-        self.get_package(package)
-            .stmts
-            .get(id)
-            .expect("StmtId should have been lowered")
-    }
-}
-
-pub(super) fn get_global(
-    fir_store: &IndexMap<PackageId, qsc_fir::fir::Package>,
-    id: GlobalId,
-) -> Option<Global> {
-    fir_store
-        .get(id.package)
-        .and_then(|package| match &package.items.get(id.item)?.kind {
-            ItemKind::Callable(callable) => Some(Global::Callable(callable)),
-            ItemKind::Namespace(..) => None,
-            ItemKind::Ty(..) => Some(Global::Udt),
-        })
-}
+#[derive(Copy, Clone, Default)]
+struct HardwareId(usize);
 
 pub struct BaseProfSim {
     next_meas_id: usize,
     next_qubit_id: usize,
-    next_qubit_hardware_id: usize,
-    qubit_map: IndexMap<usize, usize>,
+    next_qubit_hardware_id: HardwareId,
+    qubit_map: IndexMap<usize, HardwareId>,
     instrs: String,
     measurements: String,
 }
@@ -139,7 +84,7 @@ impl BaseProfSim {
         let mut sim = BaseProfSim {
             next_meas_id: 0,
             next_qubit_id: 0,
-            next_qubit_hardware_id: 0,
+            next_qubit_hardware_id: HardwareId::default(),
             qubit_map: IndexMap::new(),
             instrs: String::new(),
             measurements: String::new(),
@@ -157,7 +102,7 @@ impl BaseProfSim {
         write!(
             self.instrs,
             include_str!("./qir_base/postfix.ll"),
-            self.next_qubit_hardware_id, self.next_meas_id
+            self.next_qubit_hardware_id.0, self.next_meas_id
         )
         .expect("writing to string should succeed");
 
@@ -171,12 +116,12 @@ impl BaseProfSim {
         id
     }
 
-    fn map(&mut self, qubit: usize) -> usize {
+    fn map(&mut self, qubit: usize) -> HardwareId {
         if let Some(mapped) = self.qubit_map.get(qubit) {
             *mapped
         } else {
             let mapped = self.next_qubit_hardware_id;
-            self.next_qubit_hardware_id += 1;
+            self.next_qubit_hardware_id.0 += 1;
             self.qubit_map.insert(qubit, mapped);
             mapped
         }
@@ -292,14 +237,14 @@ impl Backend for BaseProfSim {
     }
 
     fn m(&mut self, q: usize) -> Self::ResultType {
-        let q = self.map(q);
+        let mapped_q = self.map(q);
         let id = self.get_meas_id();
         // Measurements are tracked separately from instructions, so that they can be
         // deferred until the end of the program.
         writeln!(
             self.measurements,
             "  call void @__quantum__qis__mz__body({}, {}) #1",
-            Qubit(q),
+            Qubit(mapped_q),
             Result(id),
         )
         .expect("writing to string should succeed");
@@ -498,11 +443,11 @@ impl Backend for BaseProfSim {
     }
 }
 
-struct Qubit(usize);
+struct Qubit(HardwareId);
 
 impl Display for Qubit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "%Qubit* inttoptr (i64 {} to %Qubit*)", self.0)
+        write!(f, "%Qubit* inttoptr (i64 {} to %Qubit*)", self.0 .0)
     }
 }
 

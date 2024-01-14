@@ -46,7 +46,7 @@ pub(crate) fn compile_project_with_fake_stdlib_and_markers(
         Compilation {
             package_store,
             user_package_id: package_id,
-            kind: CompilationKind::OpenDocument,
+            kind: CompilationKind::OpenProject,
             errors,
         },
         cursor_uri,
@@ -134,6 +134,11 @@ fn compile_fake_stdlib() -> (PackageStore, PackageId) {
                     Fake();
                 }
                 operation FakeWithTypeParam<'A>(a : 'A) : 'A { a }
+                internal operation Hidden() : Unit {}
+            }
+
+            namespace Microsoft.Quantum.Unstable {
+                operation UnstableFake() : Unit {}
             }"#
             .into(),
         )],

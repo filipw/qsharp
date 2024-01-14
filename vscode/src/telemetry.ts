@@ -29,6 +29,12 @@ export enum EventType {
   DebugSessionEvent = "Qsharp.DebugSessionEvent",
   Launch = "Qsharp.Launch",
   OpenedDocument = "Qsharp.OpenedDocument",
+  TriggerResourceEstimation = "Qsharp.TriggerResourceEstimation",
+  ResourceEstimationStart = "Qsharp.ResourceEstimationStart",
+  ResourceEstimationEnd = "Qsharp.ResourceEstimationEnd",
+  TriggerHistogram = "Qsharp.TriggerHistogram",
+  HistogramStart = "Qsharp.HistogramStart",
+  HistogramEnd = "Qsharp.HistogramEnd",
 }
 
 type Empty = { [K in any]: never };
@@ -54,7 +60,7 @@ type EventTypes = {
   };
   [EventType.GenerateQirEnd]: {
     properties: { associationId: string };
-    measurements: { qirLength: number };
+    measurements: { qirLength: number; timeToCompleteMs: number };
   };
   [EventType.RenderQuantumStateStart]: {
     properties: { associationId: string };
@@ -62,7 +68,7 @@ type EventTypes = {
   };
   [EventType.RenderQuantumStateEnd]: {
     properties: { associationId: string };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.SubmitToAzureStart]: {
     properties: { associationId: string };
@@ -74,7 +80,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.AuthSessionStart]: {
     properties: { associationId: string };
@@ -86,7 +92,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.QueryWorkspacesStart]: {
     properties: { associationId: string };
@@ -98,7 +104,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.AzureRequestFailed]: {
     properties: { associationId: string; reason?: string };
@@ -118,7 +124,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.QueryWorkspaceStart]: {
     properties: { associationId: string };
@@ -130,7 +136,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.CheckCorsStart]: {
     properties: { associationId: string };
@@ -142,7 +148,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.InitializeRuntimeStart]: {
     properties: { associationId: string };
@@ -154,7 +160,7 @@ type EventTypes = {
       reason?: string;
       flowStatus: UserFlowStatus;
     };
-    measurements: Empty;
+    measurements: { timeToCompleteMs: number };
   };
   [EventType.DebugSessionEvent]: {
     properties: {
@@ -170,6 +176,30 @@ type EventTypes = {
   [EventType.OpenedDocument]: {
     properties: { documentType: QsharpDocumentType };
     measurements: { linesOfCode: number };
+  };
+  [EventType.TriggerResourceEstimation]: {
+    properties: { associationId: string };
+    measurements: Empty;
+  };
+  [EventType.ResourceEstimationStart]: {
+    properties: { associationId: string };
+    measurements: Empty;
+  };
+  [EventType.ResourceEstimationEnd]: {
+    properties: { associationId: string };
+    measurements: { timeToCompleteMs: number };
+  };
+  [EventType.TriggerHistogram]: {
+    properties: { associationId: string };
+    measurements: Empty;
+  };
+  [EventType.HistogramStart]: {
+    properties: { associationId: string };
+    measurements: Empty;
+  };
+  [EventType.HistogramEnd]: {
+    properties: { associationId: string };
+    measurements: { timeToCompleteMs: number };
   };
 };
 

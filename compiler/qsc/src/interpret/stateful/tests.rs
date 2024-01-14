@@ -373,7 +373,7 @@ mod given_interpreter {
                 &output,
                 &expect![[r#"
                     type error: expected Double, found Int
-                       [line_1] [[0.0] + x]
+                       [line_1] [x]
                 "#]],
             );
         }
@@ -1045,152 +1045,6 @@ mod given_interpreter {
         }
     }
 
-    #[cfg(test)]
-    mod with_sources {
-        use super::*;
-        use expect_test::expect;
-        use indoc::indoc;
-        use qsc_frontend::compile::{RuntimeCapabilityFlags, SourceMap};
-        use qsc_passes::PackageType;
-
-        #[test]
-        fn entry_expr_is_executed() {
-            let source = indoc! { r#"
-            namespace Test {
-                @EntryPoint()
-                operation Main() : Unit {
-                    Message("hello there...")
-                }
-            }"#};
-
-            let sources = SourceMap::new([("test".into(), source.into())], None);
-            let mut interpreter = Interpreter::new(
-                true,
-                sources,
-                PackageType::Exe,
-                RuntimeCapabilityFlags::all(),
-            )
-            .expect("interpreter should be created");
-
-            let (result, output) = entry(&mut interpreter);
-            is_unit_with_output_eval_entry(&result, &output, "hello there...");
-        }
-
-        #[test]
-        fn stdlib_members_can_be_accessed_from_sources() {
-            let source = indoc! { r#"
-            namespace Test {
-                operation Main() : Unit {
-                    Message("hello there...")
-                }
-            }"#};
-
-            let sources = SourceMap::new([("test".into(), source.into())], None);
-            let mut interpreter = Interpreter::new(
-                true,
-                sources,
-                PackageType::Lib,
-                RuntimeCapabilityFlags::all(),
-            )
-            .expect("interpreter should be created");
-
-            let (result, output) = line(&mut interpreter, "Test.Main()");
-            is_unit_with_output(&result, &output, "hello there...");
-        }
-
-        #[test]
-        fn members_from_namespaced_sources_are_in_context() {
-            let source = indoc! { r#"
-            namespace Test {
-                function Hello() : String {
-                    "hello there..."
-                }
-
-                operation Main() : String {
-                    Hello()
-                }
-            }"#};
-
-            let sources = SourceMap::new([("test".into(), source.into())], None);
-            let mut interpreter = Interpreter::new(
-                true,
-                sources,
-                PackageType::Lib,
-                RuntimeCapabilityFlags::all(),
-            )
-            .expect("interpreter should be created");
-
-            let (result, output) = line(&mut interpreter, "Test.Hello()");
-            is_only_value(&result, &output, &Value::String("hello there...".into()));
-            let (result, output) = line(&mut interpreter, "Test.Main()");
-            is_only_value(&result, &output, &Value::String("hello there...".into()));
-        }
-
-        #[test]
-        fn multiple_namespaces_are_loaded_from_sources_into_eval_context() {
-            let source = indoc! { r#"
-            namespace Test {
-                function Hello() : String {
-                    "hello there..."
-                }
-            }
-            namespace Test2 {
-                open Test;
-                operation Main() : String {
-                    Hello()
-                }
-            }"#};
-
-            let sources = SourceMap::new([("test".into(), source.into())], None);
-            let mut interpreter = Interpreter::new(
-                true,
-                sources,
-                PackageType::Lib,
-                RuntimeCapabilityFlags::all(),
-            )
-            .expect("interpreter should be created");
-            let (result, output) = line(&mut interpreter, "Test.Hello()");
-            is_only_value(&result, &output, &Value::String("hello there...".into()));
-            let (result, output) = line(&mut interpreter, "Test2.Main()");
-            is_only_value(&result, &output, &Value::String("hello there...".into()));
-        }
-
-        #[test]
-        fn runtime_error_from_stdlib() {
-            let sources = SourceMap::new(
-                [(
-                    "test".into(),
-                    "namespace Foo {
-                        operation Bar(): Unit {
-                            let x = -1;
-                            use qs = Qubit[x];
-                        }
-                    }
-                    "
-                    .into(),
-                )],
-                Some("Foo.Bar()".into()),
-            );
-
-            let mut interpreter = Interpreter::new(
-                true,
-                sources,
-                PackageType::Lib,
-                RuntimeCapabilityFlags::all(),
-            )
-            .expect("interpreter should be created");
-            let (result, output) = entry(&mut interpreter);
-            is_only_error(
-                &result,
-                &output,
-                &expect![[r#"
-                    runtime error: program failed: Cannot allocate qubit array with a negative length
-                      explicit fail [core/qir.qs] [fail "Cannot allocate qubit array with a negative length"]
-                "#]],
-            );
-        }
-    }
-
     fn get_interpreter() -> Interpreter {
         Interpreter::new(
             true,
@@ -1274,5 +1128,194 @@ mod given_interpreter {
         }
 
         expected_errors.assert_eq(&actual);
+    }
+
+    #[cfg(test)]
+    mod with_sources {
+        use std::sync::Arc;
+
+        use super::*;
+        use expect_test::expect;
+        use indoc::indoc;
+        use qsc_frontend::compile::{RuntimeCapabilityFlags, SourceMap};
+        use qsc_passes::PackageType;
+
+        #[test]
+        fn entry_expr_is_executed() {
+            let source = indoc! { r#"
+            namespace Test {
+                @EntryPoint()
+                operation Main() : Unit {
+                    Message("hello there...")
+                }
+            }"#};
+
+            let sources = SourceMap::new([("test".into(), source.into())], None);
+            let mut interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Exe,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+
+            let (result, output) = entry(&mut interpreter);
+            is_unit_with_output_eval_entry(&result, &output, "hello there...");
+        }
+
+        #[test]
+        fn stdlib_members_can_be_accessed_from_sources() {
+            let source = indoc! { r#"
+            namespace Test {
+                operation Main() : Unit {
+                    Message("hello there...")
+                }
+            }"#};
+
+            let sources = SourceMap::new([("test".into(), source.into())], None);
+            let mut interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Lib,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+
+            let (result, output) = line(&mut interpreter, "Test.Main()");
+            is_unit_with_output(&result, &output, "hello there...");
+        }
+
+        #[test]
+        fn members_from_namespaced_sources_are_in_context() {
+            let source = indoc! { r#"
+            namespace Test {
+                function Hello() : String {
+                    "hello there..."
+                }
+
+                operation Main() : String {
+                    Hello()
+                }
+            }"#};
+
+            let sources = SourceMap::new([("test".into(), source.into())], None);
+            let mut interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Lib,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+
+            let (result, output) = line(&mut interpreter, "Test.Hello()");
+            is_only_value(&result, &output, &Value::String("hello there...".into()));
+            let (result, output) = line(&mut interpreter, "Test.Main()");
+            is_only_value(&result, &output, &Value::String("hello there...".into()));
+        }
+
+        #[test]
+        fn multiple_files_are_loaded_from_sources_into_eval_context() {
+            let sources: [(Arc<str>, Arc<str>); 2] = [
+                (
+                    "a.qs".into(),
+                    r#"
+            namespace Test {
+                function Hello() : String {
+                    "hello there..."
+                }
+            }"#
+                    .into(),
+                ),
+                (
+                    "b.qs".into(),
+                    r#"
+            namespace Test2 {
+                open Test;
+                operation Main() : String {
+                    Hello();
+                    Hello()
+                }
+            }"#
+                    .into(),
+                ),
+            ];
+
+            let sources = SourceMap::new(sources, None);
+            let interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Lib,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+            let bps = interpreter.get_breakpoints("a.qs");
+            assert_eq!(1, bps.len());
+            let bps = interpreter.get_breakpoints("b.qs");
+            assert_eq!(2, bps.len());
+        }
+
+        #[test]
+        fn multiple_namespaces_are_loaded_from_sources_into_eval_context() {
+            let source = indoc! { r#"
+            namespace Test {
+                function Hello() : String {
+                    "hello there..."
+                }
+            }
+            namespace Test2 {
+                open Test;
+                operation Main() : String {
+                    Hello()
+                }
+            }"#};
+
+            let sources = SourceMap::new([("test".into(), source.into())], None);
+            let mut interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Lib,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+            let (result, output) = line(&mut interpreter, "Test.Hello()");
+            is_only_value(&result, &output, &Value::String("hello there...".into()));
+            let (result, output) = line(&mut interpreter, "Test2.Main()");
+            is_only_value(&result, &output, &Value::String("hello there...".into()));
+        }
+
+        #[test]
+        fn runtime_error_from_stdlib() {
+            let sources = SourceMap::new(
+                [(
+                    "test".into(),
+                    "namespace Foo {
+                        operation Bar(): Unit {
+                            let x = -1;
+                            use qs = Qubit[x];
+                        }
+                    }
+                    "
+                    .into(),
+                )],
+                Some("Foo.Bar()".into()),
+            );
+
+            let mut interpreter = Interpreter::new(
+                true,
+                sources,
+                PackageType::Lib,
+                RuntimeCapabilityFlags::all(),
+            )
+            .expect("interpreter should be created");
+            let (result, output) = entry(&mut interpreter);
+            is_only_error(
+                &result,
+                &output,
+                &expect![[r#"
+                    runtime error: program failed: Cannot allocate qubit array with a negative length
+                      explicit fail [core/qir.qs] [fail "Cannot allocate qubit array with a negative length"]
+                "#]],
+            );
+        }
     }
 }

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 use num_bigint::BigInt;
-use qsc_fir::fir::{LocalItemId, PackageId, Pauli};
+use qsc_fir::fir::{Pauli, StoreItemId};
 use std::{
     fmt::{self, Display, Formatter},
     iter,
@@ -16,9 +16,9 @@ pub enum Value {
     Array(Rc<Vec<Value>>),
     BigInt(BigInt),
     Bool(bool),
-    Closure(Rc<[Value]>, GlobalId, FunctorApp),
+    Closure(Rc<[Value]>, StoreItemId, FunctorApp),
     Double(f64),
-    Global(GlobalId, FunctorApp),
+    Global(StoreItemId, FunctorApp),
     Int(i64),
     Pauli(Pauli),
     Qubit(Qubit),
@@ -67,18 +67,6 @@ impl From<bool> for Result {
 impl From<usize> for Result {
     fn from(val: usize) -> Self {
         Self::Id(val)
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct GlobalId {
-    pub package: PackageId,
-    pub item: LocalItemId,
-}
-
-impl Display for GlobalId {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "<item {} in package {}>", self.item, self.package)
     }
 }
 
@@ -191,12 +179,18 @@ impl Value {
     /// Updates a value in an array in-place.
     /// # Panics
     /// This will panic if the [Value] is not a [`Value::Array`].
-    pub fn update_array(&mut self, index: usize, value: Self) {
+    pub fn update_array(&mut self, index: usize, value: Self) -> core::result::Result<(), usize> {
         let Value::Array(arr) = self else {
             panic!("value should be Array, got {}", self.type_name());
         };
         let arr = Rc::get_mut(arr).expect("array should be uniquely referenced");
-        arr[index] = value;
+        match arr.get_mut(index) {
+            Some(v) => {
+                *v = value;
+                Ok(())
+            }
+            None => Err(index),
+        }
     }
 
     /// Appends a value to an array in-place.
@@ -248,7 +242,7 @@ impl Value {
     /// # Panics
     /// This will panic if the [Value] is not a [`Value::Global`].
     #[must_use]
-    pub fn unwrap_global(self) -> (GlobalId, FunctorApp) {
+    pub fn unwrap_global(self) -> (StoreItemId, FunctorApp) {
         let Value::Global(id, functor) = self else {
             panic!("value should be Global, got {}", self.type_name());
         };

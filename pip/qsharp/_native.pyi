@@ -2,7 +2,7 @@
 # Licensed under the MIT License.
 
 from enum import Enum
-from typing import Any, Callable, ClassVar, Tuple, Optional
+from typing import Any, Callable, ClassVar, Tuple, Optional, Dict
 
 class TargetProfile:
     """
@@ -12,11 +12,9 @@ class TargetProfile:
     The target profile is a description of a target's capabilities.
     """
 
-    Full: ClassVar[Any]
+    Unrestricted: ClassVar[Any]
     """
-    Describes the full set of capabilities required to run any Q# program.
-
-    This option maps to the Full Profile as defined by the QIR specification.
+    Describes the unrestricted set of capabilities required to run any Q# program.
     """
 
     Base: ClassVar[Any]
@@ -30,11 +28,20 @@ class TargetProfile:
 class Interpreter:
     """A Q# interpreter."""
 
-    def __init__(self, target_profile: TargetProfile) -> None:
+    def __init__(
+        self,
+        target_profile: TargetProfile,
+        manifest_descriptor: Optional[Dict[str, str]],
+        read_file: Callable[[str], str],
+        list_directory: Callable[[str], str],
+    ) -> None:
         """
         Initializes the Q# interpreter.
 
         :param target_profile: The target profile to use for the interpreter.
+        :param manifest_descriptor: A dictionary that represents the manifest descriptor
+        :param read_file: A function that reads a file from the file system.
+        :param list_directory: A function that lists the contents of a directory.
         """
         ...
     def interpret(self, input: str, output_fn: Callable[[Output], None]) -> Any:
@@ -74,7 +81,6 @@ class Interpreter:
         :returns qir: The QIR string.
         """
         ...
-
     def estimate(self, entry_expr: str, params: str) -> str:
         """
         Estimates resources for Q# source code.
@@ -85,7 +91,6 @@ class Interpreter:
         :returns resources: The estimated resources.
         """
         ...
-
     def dump_machine(self) -> StateDump:
         """
         Returns the sparse state vector of the simulator as a StateDump object.
@@ -147,6 +152,7 @@ class QSharpError(BaseException):
     """
     An error returned from the Q# interpreter.
     """
+
     ...
 
 def physical_estimates(logical_resources: str, params: str) -> str:

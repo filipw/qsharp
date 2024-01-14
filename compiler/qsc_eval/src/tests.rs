@@ -7,17 +7,15 @@ use crate::{
     backend::{Backend, SparseSim},
     debug::{map_hir_package_to_fir, Frame},
     output::{GenericReceiver, Receiver},
-    val::{self, GlobalId},
-    Env, Error, Global, NodeLookup, State, StepAction, StepResult, Value,
+    val, Env, Error, State, StepAction, StepResult, Value,
 };
 use expect_test::{expect, Expect};
 use indoc::indoc;
-use qsc_data_structures::index_map::IndexMap;
-
-use qsc_fir::fir::{BlockId, ExprId, ItemKind, PackageId, PatId, StmtId};
+use qsc_fir::fir;
+use qsc_fir::fir::{ExprId, PackageId, PackageStoreLookup};
 use qsc_frontend::compile::{self, compile, PackageStore, RuntimeCapabilityFlags, SourceMap};
-
 use qsc_passes::{run_core_passes, run_default_passes, PackageType};
+
 /// Evaluates the given expression with the given context.
 /// Creates a new environment and simulator.
 /// # Errors
@@ -25,7 +23,7 @@ use qsc_passes::{run_core_passes, run_default_passes, PackageType};
 pub(super) fn eval_expr(
     expr: ExprId,
     sim: &mut impl Backend<ResultType = impl Into<val::Result>>,
-    globals: &impl NodeLookup,
+    globals: &impl PackageStoreLookup,
     package: PackageId,
     out: &mut impl Receiver,
 ) -> Result<Value, (Error, Vec<Frame>)> {
@@ -38,61 +36,6 @@ pub(super) fn eval_expr(
         unreachable!("eval_expr should always return a value");
     };
     Ok(value)
-}
-
-struct Lookup<'a> {
-    fir_store: &'a IndexMap<PackageId, qsc_fir::fir::Package>,
-}
-
-impl<'a> Lookup<'a> {
-    fn get_package(&self, package: PackageId) -> &qsc_fir::fir::Package {
-        self.fir_store
-            .get(package)
-            .expect("Package should be in FIR store")
-    }
-}
-
-impl<'a> NodeLookup for Lookup<'a> {
-    fn get(&self, id: GlobalId) -> Option<Global<'a>> {
-        get_global(self.fir_store, id)
-    }
-    fn get_block(&self, package: PackageId, id: BlockId) -> &qsc_fir::fir::Block {
-        self.get_package(package)
-            .blocks
-            .get(id)
-            .expect("BlockId should have been lowered")
-    }
-    fn get_expr(&self, package: PackageId, id: ExprId) -> &qsc_fir::fir::Expr {
-        self.get_package(package)
-            .exprs
-            .get(id)
-            .expect("ExprId should have been lowered")
-    }
-    fn get_pat(&self, package: PackageId, id: PatId) -> &qsc_fir::fir::Pat {
-        self.get_package(package)
-            .pats
-            .get(id)
-            .expect("PatId should have been lowered")
-    }
-    fn get_stmt(&self, package: PackageId, id: StmtId) -> &qsc_fir::fir::Stmt {
-        self.get_package(package)
-            .stmts
-            .get(id)
-            .expect("StmtId should have been lowered")
-    }
-}
-
-pub(super) fn get_global(
-    fir_store: &IndexMap<PackageId, qsc_fir::fir::Package>,
-    id: GlobalId,
-) -> Option<Global> {
-    fir_store
-        .get(id.package)
-        .and_then(|package| match &package.items.get(id.item)?.kind {
-            ItemKind::Callable(callable) => Some(Global::Callable(callable)),
-            ItemKind::Namespace(..) => None,
-            ItemKind::Ty(..) => Some(Global::Udt),
-        })
 }
 
 fn check_expr(file: &str, expr: &str, expect: &Expect) {
@@ -128,7 +71,7 @@ fn check_expr(file: &str, expr: &str, expect: &Expect) {
     let entry = unit_fir.entry.expect("package should have entry");
     let id = store.insert(unit);
 
-    let mut fir_store = IndexMap::new();
+    let mut fir_store = fir::PackageStore::new();
     fir_store.insert(
         map_hir_package_to_fir(qsc_hir::hir::PackageId::CORE),
         core_fir,
@@ -137,13 +80,10 @@ fn check_expr(file: &str, expr: &str, expect: &Expect) {
     fir_store.insert(map_hir_package_to_fir(id), unit_fir);
 
     let mut out = Vec::new();
-    let lookup = Lookup {
-        fir_store: &fir_store,
-    };
     match eval_expr(
         entry,
         &mut SparseSim::new(),
-        &lookup,
+        &fir_store,
         map_hir_package_to_fir(id),
         &mut GenericReceiver::new(&mut out),
     ) {
@@ -412,7 +352,7 @@ fn block_qubit_use_array_invalid_count_expr() {
                             lo: 1573,
                             hi: 1625,
                         },
-                        id: GlobalId {
+                        id: StoreItemId {
                             package: PackageId(
                                 0,
                             ),
@@ -614,27 +554,18 @@ fn binop_div_double() {
 }
 
 #[test]
-fn binop_div_double_zero() {
-    check_expr(
-        "",
-        "1.2 / 0.0",
-        &expect![[r#"
-            (
-                DivZero(
-                    PackageSpan {
-                        package: PackageId(
-                            2,
-                        ),
-                        span: Span {
-                            lo: 6,
-                            hi: 9,
-                        },
-                    },
-                ),
-                [],
-            )
-        "#]],
-    );
+fn binop_div_double_inf() {
+    check_expr("", "1.2 / 0.0", &expect!["inf"]);
+}
+
+#[test]
+fn binop_div_double_neg_inf() {
+    check_expr("", "1.2 / -0.0", &expect!["-inf"]);
+}
+
+#[test]
+fn binop_div_double_nan() {
+    check_expr("", "0.0 / 0.0", &expect!["NaN"]);
 }
 
 #[test]
@@ -2149,6 +2080,171 @@ fn update_range_to_end() {
 }
 
 #[test]
+fn update_array_with_range() {
+    check_expr("", "[0, 1, 2] w/ 1..2 <- [10, 11]", &expect!["[0, 10, 11]"]);
+}
+
+#[test]
+fn update_array_with_range_start() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1... <- [10, 11]",
+        &expect!["[0, 10, 11, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_step() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ ...2... <- [10, 11]",
+        &expect!["[10, 1, 11, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_end() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ ...2 <- [10, 11, 12, 13]",
+        &expect!["[10, 11, 12, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_fully_open() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ ... <- [10, 11, 12, 13]",
+        &expect!["[10, 11, 12, 13]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_reverse() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 2..-1..0 <- [10, 11]",
+        &expect!["[0, 11, 10, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_out_of_range_err() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1..5 <- [10, 11, 12, 13]",
+        &expect![[r#"
+            (
+                IndexOutOfRange(
+                    4,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 16,
+                            hi: 20,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
+    );
+}
+
+#[test]
+fn update_array_with_range_negative_index_err() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ -1..0 <- [10, 11, 12, 13]",
+        &expect![[r#"
+            (
+                InvalidIndex(
+                    -1,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 16,
+                            hi: 21,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
+    );
+}
+
+#[test]
+fn update_array_with_range_zero_step_err() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ ...0... <- [10, 11, 12, 13]",
+        &expect![[r#"
+            (
+                RangeStepZero(
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 16,
+                            hi: 23,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
+    );
+}
+
+#[test]
+fn update_array_with_range_bigger_than_update() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1..3 <- [10]",
+        &expect!["[0, 10, 2, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_smaller_than_update() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1..3 <- [10, 11, 12, 13]",
+        &expect!["[0, 10, 11, 12]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_open_ended_bigger_than_update() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1... <- [10]",
+        &expect!["[0, 10, 2, 3]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_open_ended_smaller_than_update() {
+    check_expr(
+        "",
+        "[0, 1, 2, 3] w/ 1... <- [10, 11, 12, 13]",
+        &expect!["[0, 10, 11, 12]"],
+    );
+}
+
+#[test]
+fn update_array_with_range_empty_update() {
+    check_expr("", "[0, 1, 2, 3] w/ 1..3 <- []", &expect!["[0, 1, 2, 3]"]);
+}
+
+#[test]
 fn assignupdate_expr() {
     check_expr(
         "",
@@ -2158,6 +2254,64 @@ fn assignupdate_expr() {
             x
         }"},
         &expect!["[1, 2, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_out_of_range_err() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3];
+            set x w/= 4 <- 4;
+            x
+        }"},
+        &expect![[r#"
+            (
+                IndexOutOfRange(
+                    4,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 43,
+                            hi: 44,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
+    );
+}
+
+#[test]
+fn assignupdate_expr_negative_index_err() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3];
+            set x w/= -1 <- 4;
+            x
+        }"},
+        &expect![[r#"
+            (
+                InvalidNegativeInt(
+                    -1,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 43,
+                            hi: 45,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
     );
 }
 
@@ -2176,6 +2330,207 @@ fn assignupdate_expr_using_field_name() {
             p
         }"},
         &expect!["(3, 2)"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3];
+            set x w/= 1..2 <- [10, 11];
+            x
+        }"},
+        &expect!["[1, 10, 11]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_start() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1... <- [10, 11];
+            x
+        }"},
+        &expect!["[1, 10, 11, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_step() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= ...2... <- [10, 11];
+            x
+        }"},
+        &expect!["[10, 2, 11, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_end() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= ...2 <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect!["[10, 11, 12, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_fully_open() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= ... <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect!["[10, 11, 12, 13]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_reverse() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 2..-1..0 <- [10, 11];
+            x
+        }"},
+        &expect!["[1, 11, 10, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_bigger_than_update() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1..3 <- [10];
+            x
+        }"},
+        &expect!["[1, 10, 3, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_smaller_than_update() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1..3 <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect!["[1, 10, 11, 12]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_open_ended_bigger_than_update() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1... <- [10, 11];
+            x
+        }"},
+        &expect!["[1, 10, 11, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_open_ended_smaller_than_update() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1... <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect!["[1, 10, 11, 12]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_empty_update() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1..3 <- [];
+            x
+        }"},
+        &expect!["[1, 2, 3, 4]"],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_out_of_range_err() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= 1..5 <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect![[r#"
+            (
+                IndexOutOfRange(
+                    4,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 46,
+                            hi: 50,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
+    );
+}
+
+#[test]
+fn assignupdate_expr_using_range_negative_index_err() {
+    check_expr(
+        "",
+        indoc! {"{
+            mutable x = [1, 2, 3, 4];
+            set x w/= -1..0 <- [10, 11, 12, 13];
+            x
+        }"},
+        &expect![[r#"
+            (
+                InvalidNegativeInt(
+                    -1,
+                    PackageSpan {
+                        package: PackageId(
+                            2,
+                        ),
+                        span: Span {
+                            lo: 46,
+                            hi: 51,
+                        },
+                    },
+                ),
+                [],
+            )
+        "#]],
     );
 }
 
@@ -2558,7 +2913,7 @@ fn call_adjoint_expr() {
                             lo: 190,
                             hi: 214,
                         },
-                        id: GlobalId {
+                        id: StoreItemId {
                             package: PackageId(
                                 2,
                             ),
@@ -2622,7 +2977,7 @@ fn call_adjoint_adjoint_expr() {
                             lo: 124,
                             hi: 145,
                         },
-                        id: GlobalId {
+                        id: StoreItemId {
                             package: PackageId(
                                 2,
                             ),
@@ -2681,7 +3036,7 @@ fn call_adjoint_self_expr() {
                             lo: 116,
                             hi: 137,
                         },
-                        id: GlobalId {
+                        id: StoreItemId {
                             package: PackageId(
                                 2,
                             ),

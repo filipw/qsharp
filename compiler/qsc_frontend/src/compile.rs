@@ -49,7 +49,7 @@ bitflags! {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ConfigAttr {
-    Full,
+    Unrestricted,
     Base,
 }
 
@@ -57,7 +57,7 @@ impl ConfigAttr {
     #[must_use]
     pub fn to_str(&self) -> &'static str {
         match self {
-            Self::Full => "Full",
+            Self::Unrestricted => "Unrestricted",
             Self::Base => "Base",
         }
     }
@@ -73,7 +73,7 @@ impl FromStr for ConfigAttr {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Full" => Ok(ConfigAttr::Full),
+            "Unrestricted" => Ok(ConfigAttr::Unrestricted),
             "Base" => Ok(ConfigAttr::Base),
             _ => Err(()),
         }
@@ -83,7 +83,7 @@ impl FromStr for ConfigAttr {
 impl From<ConfigAttr> for RuntimeCapabilityFlags {
     fn from(value: ConfigAttr) -> Self {
         match value {
-            ConfigAttr::Full => Self::all(),
+            ConfigAttr::Unrestricted => Self::all(),
             ConfigAttr::Base => Self::empty(),
         }
     }
@@ -169,6 +169,10 @@ impl SourceMap {
     pub fn find_by_name(&self, name: &str) -> Option<&Source> {
         self.sources.iter().find(|s| s.name.as_ref() == name)
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Source> {
+        self.sources.iter()
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -204,6 +208,12 @@ pub struct PackageStore {
     core: global::Table,
     units: IndexMap<PackageId, CompileUnit>,
     next_id: PackageId,
+}
+
+impl Debug for PackageStore {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "package store with {} units", self.units.iter().count())
+    }
 }
 
 impl PackageStore {
@@ -254,6 +264,13 @@ impl PackageStore {
             store: self,
             open: id,
         }
+    }
+}
+impl<'a> IntoIterator for &'a PackageStore {
+    type IntoIter = Iter<'a>;
+    type Item = (qsc_hir::hir::PackageId, &'a CompileUnit);
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
 

@@ -3,15 +3,15 @@
 
 use qsc::{compile::Error, target::Profile, PackageType};
 
-/// Workspace configuration
-#[derive(Clone, Debug, Default)]
+/// A change to the workspace configuration
+#[derive(Clone, Debug, Default, Copy)]
 pub struct WorkspaceConfigurationUpdate {
     pub target_profile: Option<Profile>,
     pub package_type: Option<PackageType>,
 }
 
 /// Represents a span of text used by the Language Server API
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Span {
     pub start: u32,
     pub end: u32,
@@ -24,7 +24,7 @@ pub struct DiagnosticUpdate {
     pub errors: Vec<Error>,
 }
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 #[allow(clippy::module_name_repetitions)]
 pub enum CompletionItemKind {
     // It would have been nice to match the numeric values to the ones used by
@@ -39,7 +39,7 @@ pub enum CompletionItemKind {
     TypeParameter,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 #[allow(clippy::module_name_repetitions)]
 pub struct CompletionList {
     pub items: Vec<CompletionItem>,
@@ -65,6 +65,30 @@ impl CompletionItem {
             detail: None,
             additional_text_edits: None,
         }
+    }
+}
+
+impl PartialEq for CompletionItem {
+    // exclude sort text for comparison
+    fn eq(&self, other: &Self) -> bool {
+        self.label == other.label
+            && self.kind == other.kind
+            && self.detail == other.detail
+            && self.additional_text_edits == other.additional_text_edits
+    }
+}
+
+impl Eq for CompletionItem {}
+
+use std::hash::{Hash, Hasher};
+
+impl Hash for CompletionItem {
+    // exclude sort text for hashing
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.label.hash(state);
+        self.kind.hash(state);
+        self.detail.hash(state);
+        self.additional_text_edits.hash(state);
     }
 }
 
@@ -100,7 +124,7 @@ pub struct ParameterInformation {
     pub documentation: Option<String>,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone, Copy)]
 pub struct NotebookMetadata {
     pub target_profile: Option<Profile>,
 }

@@ -254,7 +254,7 @@ namespace Microsoft.Quantum.Unstable.Arithmetic {
     ///   Phys. Rev. A 87, 022328, 2013
     ///   [arXiv:1212.5069](https://arxiv.org/abs/1212.5069)
     ///   doi:10.1103/PhysRevA.87.022328
-    @Config(Full)
+    @Config(Unrestricted)
     internal operation ApplyAndAssuming0Target(control1 : Qubit, control2 : Qubit, target: Qubit)
     : Unit is Adj { // NOTE: Eventually this operation will be public and intrinsic.
         body (...) {
@@ -533,6 +533,39 @@ namespace Microsoft.Quantum.Unstable.Arithmetic {
         }
 
         controlled adjoint auto;
+    }
+
+    /// # Summary
+    /// This wrapper allows operations that support only one control
+    /// qubit to be used in a multi-controlled scenarios. It provides
+    /// controlled version that collects controls into one qubit
+    /// by applying AND chain using auxiliary qubit array.
+    internal operation ApplyAsSinglyControlled<'TIn> (
+        op : ( 'TIn => Unit is Adj + Ctl ),
+        input : 'TIn ) : Unit is Adj + Ctl {
+
+        body (...) {
+            op(input);
+        }
+
+        controlled (ctls, ...) {
+            let n = Length(ctls);
+            if n == 0 {
+                op(input);
+            } elif n == 1 {
+                Controlled op(ctls, input);
+            } else {
+                use aux = Qubit[n-1];
+                within {
+                    ApplyAndAssuming0Target(ctls[0], ctls[1], aux[0]);
+                    for i in 1..n-2 {
+                        ApplyAndAssuming0Target(aux[i-1], ctls[i+1], aux[i]);
+                    }
+                } apply {
+                    Controlled op(aux[n-2..n-2], input);
+                }
+            }
+        }
     }
 
 }
